@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="reg_form_style.css">
+    <link rel="stylesheet" href="{% static "css/reg_form_style.css" %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"
@@ -19,7 +21,7 @@
 <div class="reg_container">
     <div class="reg_form_container">
 
-        <img class="reg_form_img" src="reg_form_img_pig.png"
+        <img class="reg_form_img" src="{% static "img/reg_form_img_pig.png" %}"
              alt="=Oops...">
 
          <div class="reg_form_container_content">

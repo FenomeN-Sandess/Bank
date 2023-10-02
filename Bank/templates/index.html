@@ -1,4 +1,4 @@
-{%  load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -29,7 +29,7 @@
         <nav class="nav_link_bar">
             <a class="nav_link" href="#"> О нас </a>
             <a class="nav_link" href="#"> Вход </a>
-            <a class="nav_link" href="reg_form.html"> Регистрация </a>
+            <a class="nav_link" href="{% url 'reg_form' %}"> Регистрация </a>
             <a class="nav_link" href="#"> Личный кабинет </a>
         </nav>
     </div>
