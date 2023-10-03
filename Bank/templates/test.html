@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="{% static "css/index_style.css" %}">
+{#    <link rel="stylesheet" href="{% static "css/index_style.css" %}">#}
 <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap"
           rel="stylesheet">
-    <title>Bank</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
@@ -27,17 +27,15 @@
             Lab.Bank
         </div>
         <nav class="nav_link_bar">
-            {% block sidebar %}
-                    <a class="nav_link" href="#"> О нас </a>
-                    <a class="nav_link" href="#"> Вход </a>
-                    <a class="nav_link" href="/reg"> Регистрация </a>
-                    <a class="nav_link" href="#"> Личный кабинет </a>
-            {% endblock %}
+            {% block sidebar %}{% endblock %}
         </nav>
     </div>
 </header>
 
 <div class="intro">
+    {% block content %}{% endblock %}
+
+ {{ context.name }}
 </div>
 
 <footer>

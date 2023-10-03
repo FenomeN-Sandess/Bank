@@ -1,0 +1,25 @@
+{% extends "test.html" %}
+
+{% block title %}Тестовая страница{% endblock %}
+
+{% block header %}Тестовая страница{% endblock %}
+
+{% block sidebar %}
+    <a class="nav_link" href="#"> О нас </a>
+    <a class="nav_link" href="#"> Вход </a>
+    <a class="nav_link" href="/reg"> Регистрация </a>
+    <a class="nav_link" href="#"> Личный кабинет </a>
+{% endblock %}
+
+{% block content %}
+    <ul>
+    {% for contex in context %}
+        <li>{{ contex.name }} - имя пользователя <br> </li>
+        <li>{{ contex.cash }} - Счёт <br> </li>
+        <li>{{ contex.currency_unit }} - Вид денежной единицы <br> </li>
+        <br>
+    {% empty %}
+        <li>Список пуст.<br></li>
+    {% endfor %}
+    </ul>
+{% endblock %}
