@@ -12,14 +12,23 @@
 {% endblock %}
 
 {% block content %}
-    <ul>
-    {% for contex in context %}
-        <li>{{ contex.name }} - имя пользователя <br> </li>
-        <li>{{ contex.cash }} - Счёт <br> </li>
-        <li>{{ contex.currency_unit }} - Вид денежной единицы <br> </li>
-        <br>
-    {% empty %}
-        <li>Список пуст.<br></li>
-    {% endfor %}
-    </ul>
+{% endblock %}
+
+{% block form %}
+<form action="/test/" method="GET">
+    <label for="name">Имя клиента:</label>
+    <input name="enter" type="text" id="name" placeholder="Введите имя клиента"  {% if enter_name %} value = "{{ enter_name }}" {% endif %} >
+    <button type="submit">Найти</button>
+</form>
+
+{% endblock %}
+
+{% block wallets %}
+    {% for wallet in wallets %}
+     <br><br>
+ 	 {{ wallet.id_user.username }} - имя владельца кошелька <br>
+     {{ wallet.cash }} - количество денег у владельца кошелька <br>
+     {{ wallet.currency_unit }} - валюта <br>
+     <br><br>
+ {% endfor %}
 {% endblock %}

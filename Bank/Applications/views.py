@@ -9,6 +9,11 @@ def reg_form(request):
     return render(request, "reg_form.html", )
 
 def test(request):
-    wallets = wallet.objects.all()
-    context = {"context": wallets}
+    enter_name = request.GET.get('enter', None)
+    if enter_name:
+        wallets = wallet.objects.filter(name__contains=enter_name)
+    else:
+        wallets = None
+
+    context = {"wallets": wallets, "enter_name": enter_name}
     return render(request, "base.html", context)
