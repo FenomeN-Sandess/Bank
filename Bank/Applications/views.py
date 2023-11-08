@@ -5,8 +5,8 @@ from .models import wallet
 def index(request):
     return render(request, "index.html")
 
-def reg_form(request):
-    return render(request, "reg_form.html", )
+def login(request):
+    return render(request, "login.html")
 
 def test(request):
     enter_name = request.GET.get('enter', None)

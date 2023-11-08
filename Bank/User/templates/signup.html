@@ -1,0 +1,12 @@
+{%  extends "reg_form.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+
+<form method="post" action="{% url 'signup' %}">
+
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Зарегистрироваться">
+</form>
+
+{% endblock %}

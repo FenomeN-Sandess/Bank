@@ -4,23 +4,12 @@
 
 {% block header %}Тестовая страница{% endblock %}
 
-{% block sidebar %}
-    <a class="nav_link" href="#"> О нас </a>
-    <a class="nav_link" href="#"> Вход </a>
-    <a class="nav_link" href="/reg"> Регистрация </a>
-    <a class="nav_link" href="#"> Личный кабинет </a>
-{% endblock %}
-
-{% block content %}
-{% endblock %}
-
 {% block form %}
 <form action="/test/" method="GET">
     <label for="name">Имя клиента:</label>
     <input name="enter" type="text" id="name" placeholder="Введите имя клиента"  {% if enter_name %} value = "{{ enter_name }}" {% endif %} >
     <button type="submit">Найти</button>
 </form>
-
 {% endblock %}
 
 {% block wallets %}
@@ -30,5 +19,6 @@
      {{ wallet.cash }} - количество денег у владельца кошелька <br>
      {{ wallet.currency_unit }} - валюта <br>
      <br><br>
- {% endfor %}
+    {% endfor %}
 {% endblock %}
+

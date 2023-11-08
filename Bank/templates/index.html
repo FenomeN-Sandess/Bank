@@ -1,10 +1,10 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 
 <head>
     <meta charset="UTF-8">
-
+    {% load static %}
     <link rel="stylesheet" href="{% static "css/index_style.css" %}">
 <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
@@ -29,8 +29,10 @@
         <nav class="nav_link_bar">
             {% block sidebar %}
                     <a class="nav_link" href="#"> О нас </a>
-                    <a class="nav_link" href="#"> Вход </a>
-                    <a class="nav_link" href="/reg"> Регистрация </a>
+                    {% if user.is_authenticated == False %}
+                    	<a class="nav_link" href="/login/"> Вход </a>
+                    {% endif %}
+                    <a class="nav_link" href="/auth/signup"> Зарегистрировать пользователя </a>
                     <a class="nav_link" href="#"> Личный кабинет </a>
             {% endblock %}
         </nav>

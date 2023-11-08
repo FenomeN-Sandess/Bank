@@ -1,61 +1,12 @@
-{% load static %}
-
 <!DOCTYPE html>
-<html lang="ru">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static "css/reg_form_style.css" %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"
-          rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap"
-          rel="stylesheet">
-    <title>Bank\Registration</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
-
 <body>
-<div class="reg_container">
-    <div class="reg_form_container">
 
-        <img class="reg_form_img" src="{% static "img/reg_form_img_pig.png" %}"
-             alt="=Oops...">
+    {% block content %}{% endblock %}
 
-         <div class="reg_form_container_content">
-             <div class="reg_form_header">
-                 Lab.Bank
-             </div>
-
-             <form class="reg_form" action="" method="post">
-                 <div class="reg_form_input_block">
-                    <label for="username_label"> логин </label>
-                    <input id="username_label" type="text"
-                           name="username" class="reg_form_input">
-                </div>
-
-                <div class="reg_form_input_block">
-                    <label for="password_label"> пароль </label>
-                    <input id="password_label" type="password"
-                           name="password" class="reg_form_input">
-                </div>
-
-                 <div class="reg_form_radio_block">
-                     <input id="radio" type="radio" class="reg_form_radio">
-                     <label for="radio"> Запомнить меня </label>
-                 </div>
-
-                <div class="reg_form_input_block">
-                    <input value="Войти" type="submit"
-                           class="reg_form_submit">
-                </div>
-             </form>
-         </div>
-
-    </div>
-</div>
 </body>
-
 </html>

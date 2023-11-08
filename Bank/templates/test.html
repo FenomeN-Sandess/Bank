@@ -27,7 +27,10 @@
             Lab.Bank
         </div>
         <nav class="nav_link_bar">
-            {% block sidebar %}{% endblock %}
+            <a class="nav_link" href="#"> О нас </a>
+            <a class="nav_link" href="#"> Вход </a>
+            <a class="nav_link" href="/reg"> Регистрация </a>
+            <a class="nav_link" href="#"> Личный кабинет </a>
         </nav>
     </div>
 </header>
@@ -43,9 +46,8 @@
 {% block form %} {% endblock %}
 
 
-<div> {% block wallets %}{% endblock %}
+<div> {% block wallets %}{% endblock %}</div>
 
-</div>
 
 <footer>
 
