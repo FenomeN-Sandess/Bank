@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
+
+    <title>Registation</title>
 </head>
 <body>
-
-    {% block content %}{% endblock %}
-
+    <h1>User Registration</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
 </body>
 </html>
