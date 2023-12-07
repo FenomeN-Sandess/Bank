@@ -1,17 +1,32 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import *
 from django import forms
 
+# Шаблонная тема - наследник формы для создания пользователя
 class UserRegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-
     class Meta:
         model = User
-        fields = ("username", "email", "password1", "password2")
+        fields = ("username", "password1", "password2") #Под капотом UserCreationForm реализовано сохранение полей в БД с помощью ORM команд
 
     def save(self, commit=True):
         user = super(UserRegistrationForm, self).save(commit=False)
-        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
+
+class CustomUserRegistrationForm(forms.ModelForm):
+    name = forms.CharField(max_length=100, required=False)
+    itn = forms.CharField(max_length=10, required=False)
+    phone_number = forms.CharField(max_length=10, required=False)
+    date_of_birth = forms.DateField(required=False)
+
+    class Meta:
+        model = CustomUser
+        fields = ("name", "phone_number", "date_of_birth", "itn")
+
+    def save(self, commit=True):
+        user = super(CustomUserRegistrationForm, self).save(commit=False)
         if commit:
             user.save()
         return user

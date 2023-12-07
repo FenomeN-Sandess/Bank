@@ -12,7 +12,7 @@ class CustomUser(models.Model):
 # Это модель, неразрывно связанная с CustomUser для определения роли пользователя
 class Role(models.Model):
     user_profile = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    role = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL)
+    role = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL, default=Group.objects.get(name="Client"))
     def __str__(self):
         return f"Пользователь {self.user_profile.name} имеет роль {self.role}"
 

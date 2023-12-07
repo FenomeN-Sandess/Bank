@@ -29,11 +29,10 @@
         <nav class="nav_link_bar">
             {% block sidebar %}
                     <a class="nav_link" href="#"> О нас </a>
-
-                    {% if priv %}
-                        <a class="nav_link" href="/auth/signup"> Управление пользователями </a>
+                    {% if priv %} {# Проверка на группу админ или служащий #}
+                        <a class="nav_link" href="/reg/"> Зарегистрировать пользователя </a>
                     {% endif %}
-                    {% if Authoriz %}
+                    {% if authoriz %} {# Проверка на авторизацию пользователя #}
                         <a class="nav_link" href="/logout/"> Выход </a>
                     {% else %}
                         <a class="nav_link" href="/login/"> Вход </a>
@@ -43,12 +42,13 @@
     </div>
 </header>
 
-<div class="intro">
-
-</div>
-
+{#<div class="intro">#}
+{##}
+{#</div>#}
+<br><br><br>
 <div class="Information">
-    {% if Authoriz %}
+    {% if authoriz %}
+        Информация о пользователе: <br>
     	Имя пользователя: {{ name }} <br>
         Роль: {{ role }}
     {% endif %}

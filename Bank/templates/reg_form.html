@@ -3,14 +3,52 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>Registation</title>
+    <title>Registration</title>
 </head>
 <body>
-    <h1>User Registration</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
+    <h1>Регистрация пользователя</h1>
+
+    {# Вот тут надо бы скрипты подключить для красоты как-то шоб сначала вводить логин, пароль, затем на одной же страничке остальные данные #}
+    {# Имя, фамилия, Отчество, ИНН, Адрес и другие поля, ещё дополню мб, типо полноценная регистрация на сайте #}
+    {# Пока что в случае регистрации идёт перенаправление на url какой-то (в нашем случае - главная стр), но потом нужно будет разобраться, как там скрипт вызвать #}
+
+    <form method="post" action="{% url 'reg_form' %}">
+    {% csrf_token %}
+        <p><label for="id_username">Логин:</label>
+    <input type="text" name="username" maxlength="150" required id="id_username"></p>
+        <p><label for="id_password1">Пароль:</label>
+    <input type="password" name="password1" required id="id_password1"></p>
+        <p><label for="id_password2">Подтверждение пароля:</label>
+    <input type="password" name="password2" required id="id_password2"></p>
+
+
+
+
+
+
+
+    <button type="submit">Зарегистрировать пользователя на сайте</button>
     </form>
+    <p>{{ text }}</p>
+
+{#    <form method="post" action="{% url 'reg_form' %}">#}
+{#    {% csrf_token %}#}
+{#    <label for="id_name">Имя пользователя:</label>#}
+{#    <input type="text" name="name" maxlength="150" required id="id_name">#}
+{##}
+{#    <label for="id_phone">Номер телефона:</label>#}
+{#    <input type="text" name="phone_number" required id="id_phone">#}
+{##}
+{#    <label for="id_date">Дата рождения:</label>#}
+{#    <input type="date" name="date_of_birth" required id="id_date">#}
+{##}
+{#    <label for="id_itn">ИНН:</label>#}
+{#    <input type="text" name="itn" required id="id_itn">#}
+{##}
+{#    <button type="submit">Зарегистрировать пользователя в банке</button>#}
+{#    </form>#}
+
+
+
 </body>
 </html>
