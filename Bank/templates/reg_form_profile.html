@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в банк</title>
+</head>
+<body>
+    <p> Регистрация пользователя {{ text }}</p>
+<form class="reg_form_profile" action="" method="post">
+    {% csrf_token %}
+    <div>
+        <label for="id_name"> Имя пользователя</label>
+        <input id="id_name" type="text" name="name">
+    </div>
+    <div>
+        <label for="id_number"> Номер телефона </label>
+        <input id="id_number" type="text" name="phone_number">
+    </div>
+    <div>
+        <label for="id_birth"> Дата рождения </label>
+        <input id="id_birth" type="date" name="date_of_birth">
+    </div>
+    <div>
+        <label for="id_itn"> Номер ИНН </label>
+        <input id="id_itn" type="text" name="itn">
+    </div>
+    <div class="reg_form_input_block">
+        <button type="submit">Зарегистрировать пользователя</button>
+    </div>
+
+</form>
+
+</body>
+</html>

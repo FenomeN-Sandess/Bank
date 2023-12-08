@@ -8,7 +8,8 @@ class CustomUser(models.Model):
     itn = models.CharField(max_length=10, blank=True, null=True)                 # ИНН
     phone_number = models.CharField(max_length=10, blank=True, null=True)        # Номер телефона
     date_of_birth = models.DateField(blank=True, null=True)                      # Дата рождения
-
+    def __str__(self):
+        return f"{self.user.username}"
 # Это модель кошелька, которая так же неразрывно связана с CustomUser. В ней определены поля типа кошелька
 class Wallet(models.Model):
     CURRENCY_CHOICES = [

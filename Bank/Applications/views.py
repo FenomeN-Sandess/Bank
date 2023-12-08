@@ -31,7 +31,7 @@ def login_view(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             form_data = form.cleaned_data
-            user = authenticate(username= form_data['username'], password = form_data['password'])
+            user = authenticate(username= form_data['username'], password=form_data['password'])
             if user is not None:
                 if user.is_active:
                     login(request, user)
@@ -45,13 +45,35 @@ def login_view(request):
     return render(request, "login.html", {"text": text, "form": form})
 
 def register(request):
-    text = str()
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST) # Сохраняется форма с вписанными пользователем данными
         if form.is_valid(): # Проверяется, являются ли данные формы валидными
             form.save() # Объявляется метод сохранения данных из формы
-            text = "Пользователь успешно зарегистрирован"
-    contex = {
-        "text": text
-    }
-    return render(request, 'reg_form.html', contex)
+            request.session["saved_username"] = form.cleaned_data["username"] # Сохраняем имя пользователя в сессии служащего
+            return redirect("/reg_profile")
+
+    return render(request, 'reg_form.html')
+
+def save_profile(current_profile, form_profile):
+    current_profile.name = form_profile.cleaned_data["name"]
+    current_profile.itn = form_profile.cleaned_data["itn"]
+    current_profile.phone_number = form_profile.cleaned_data['phone_number']
+    current_profile.date_of_birth = form_profile.cleaned_data['date_of_birth']
+    current_profile.save()
+def registerProfile(request):
+    text = str()
+    if request.method == "POST":
+        current_user = User.objects.get(username=request.session.get("saved_username"))
+        current_profile = CustomUser.objects.create(user=current_user)  # Создаём запись в БД о пользователе
+        form_profile = ProfileForm(request.POST)
+        if form_profile.is_valid():
+            save_profile(current_profile, form_profile)
+            return redirect("/")
+
+    if (request.session.get("saved_username")):
+        if not(text):
+            text = request.session.get("saved_username") # Нужно не забыть в конце почистить сессию
+        return render(request, "reg_form_profile.html", {"text": text})
+    else:
+        text = "Выполнено"
+        return redirect("/")

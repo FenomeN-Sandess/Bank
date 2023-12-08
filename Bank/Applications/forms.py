@@ -15,21 +15,11 @@ class UserRegistrationForm(UserCreationForm):
             user.save()
         return user
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(forms.Form):
     name = forms.CharField(max_length=100, required=False)
     itn = forms.CharField(max_length=10, required=False)
     phone_number = forms.CharField(max_length=10, required=False)
     date_of_birth = forms.DateField(required=False)
-
-    class Meta:
-        model = CustomUser
-        fields = ("name", "phone_number", "date_of_birth", "itn")
-
-    def save(self, commit=True):
-        user = super(ProfileForm, self).save(commit=False)
-        if commit:
-            user.save()
-        return user
 
 class LoginForm(forms.Form):
     username = forms.CharField()
