@@ -9,13 +9,6 @@ class CustomUser(models.Model):
     phone_number = models.CharField(max_length=10, blank=True, null=True)        # Номер телефона
     date_of_birth = models.DateField(blank=True, null=True)                      # Дата рождения
 
-# Это модель, неразрывно связанная с CustomUser для определения роли пользователя
-class Role(models.Model):
-    user_profile = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    role = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL, default=Group.objects.get(name="Client"))
-    def __str__(self):
-        return f"Пользователь {self.user_profile.name} имеет роль {self.role}"
-
 # Это модель кошелька, которая так же неразрывно связана с CustomUser. В ней определены поля типа кошелька
 class Wallet(models.Model):
     CURRENCY_CHOICES = [

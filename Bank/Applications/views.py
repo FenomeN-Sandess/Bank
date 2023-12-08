@@ -2,51 +2,56 @@ from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
 from django.http import HttpResponse
+from django.contrib.auth import logout, authenticate, login
 
-
-def user_update(authoriz: bool, main_user):
-    if authoriz:
-        custom_user = CustomUser.objects.get(user=main_user)
-        role_user = Role.objects.get(user_profile=custom_user)
-        current_role = role_user.role.name
-        current_name = custom_user.name
-        privilege: bool = role_user.role.name in ["Employee", "Admin"]
-
-        user_tuple = {
-            "name": current_name,
-            "role": current_role,
-            "priv": privilege
-        }
-        return user_tuple
-    else:
-        return tuple()
+def is_there_group(user) -> bool: # Функция, проверяющая принадлежит ли какой-либо группе пользователь
+    return (len(user.groups.all()) > 0)
+def check_group(user, name_group: str) -> bool: # Проверяет, принадлежит ли пользователь данной группе
+    return Group.objects.get(name = name_group) in user.groups.all()
 
 def index(request):
-    main_user = request.user
-    authoriz: bool = main_user.is_authenticated
-    contex = {"authoriz": authoriz, "priv": False}
-    contex.update(user_update(authoriz, main_user))
+    user = request.user # Текущий пользователь
+    manager: bool = check_group(user, "Admin") or check_group(user, "Employee")
+    contex = {
+        "manager": manager,
+        "authorization": user.is_authenticated,
+        "login": user.username,
+        "groups": user.groups.all()
+    }
     return render(request, "index.html", contex)
+def log(request):
+    logout(request)
+    return render(request, "index.html")
+def about(request):
+    return render(request, "about.html")
 
+def login_view(request):
+    text = str()
+    if request.method=="POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            form_data = form.cleaned_data
+            user = authenticate(username= form_data['username'], password = form_data['password'])
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect("/")
+                else:
+                    return HttpResponse("Учетная запись отключена")
+            else:
+                return HttpResponse("Неверный логин или пароль")
+    else:
+        form = LoginForm()
+    return render(request, "login.html", {"text": text, "form": form})
 
 def register(request):
     text = str()
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST) #Сохраняется форма с вписанными пользователем данными
-        # form2 = CustomUserRegistrationForm(request.POST, prefix = "form2")
-        text = "Не успешно, но что-то"
-        if (form.is_valid()): # Проверяется, являются ли данные формы валидными
+        form = UserRegistrationForm(request.POST) # Сохраняется форма с вписанными пользователем данными
+        if form.is_valid(): # Проверяется, являются ли данные формы валидными
             form.save() # Объявляется метод сохранения данных из формы
-            # form2.save() # Объявляется метод сохранения данных из формы
-            text = "Успешно"
-            # return redirect("index_url")  # Перенаправление на страницу после успешной регистрации
-    else:
-        form = UserRegistrationForm(prefix="form1")
-        # form2 = CustomUserRegistrationForm(prefix="form2")
+            text = "Пользователь успешно зарегистрирован"
     contex = {
-        "form": form,
-        # "form2": form2,
         "text": text
     }
-
     return render(request, 'reg_form.html', contex)

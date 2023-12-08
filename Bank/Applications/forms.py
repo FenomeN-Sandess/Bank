@@ -15,7 +15,7 @@ class UserRegistrationForm(UserCreationForm):
             user.save()
         return user
 
-class CustomUserRegistrationForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     name = forms.CharField(max_length=100, required=False)
     itn = forms.CharField(max_length=10, required=False)
     phone_number = forms.CharField(max_length=10, required=False)
@@ -26,7 +26,12 @@ class CustomUserRegistrationForm(forms.ModelForm):
         fields = ("name", "phone_number", "date_of_birth", "itn")
 
     def save(self, commit=True):
-        user = super(CustomUserRegistrationForm, self).save(commit=False)
+        user = super(ProfileForm, self).save(commit=False)
         if commit:
             user.save()
         return user
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
