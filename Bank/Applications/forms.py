@@ -10,6 +10,7 @@ class UserRegistrationForm(UserCreationForm):
         fields = ("username", "password1", "password2") #Под капотом UserCreationForm реализовано сохранение полей в БД с помощью ORM команд
 
     def save(self, commit=True):
+        # Занесение группы включено при регистрации пользователя
         user = super(UserRegistrationForm, self).save(commit=False)
         if commit:
             user.save()
