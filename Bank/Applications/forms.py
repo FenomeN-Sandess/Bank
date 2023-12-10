@@ -21,8 +21,18 @@ class ProfileForm(forms.Form):
     itn = forms.CharField(max_length=10, required=False)
     phone_number = forms.CharField(max_length=10, required=False)
     date_of_birth = forms.DateField(required=False)
-
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
+class WalletForm(forms.Form):
+    CURRENCY_CHOICES = [
+        ("RU", "Рубль"),
+        ("USA", "Доллар")
+    ]
+
+    currency = forms.ChoiceField(choices=CURRENCY_CHOICES)
+    wallet_number = forms.IntegerField(min_value=1000000000, max_value=9999999999, required=False)
+
+class CreditForm(forms.Form):
+    card_number = forms.IntegerField(min_value=1000000000, max_value=9999999999, required=False)
