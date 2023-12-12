@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Перевод</title>
+</head>
+<body>
+    <a href="/private_office">Вернуться назад</a> <br>
+
+    <button id="showCode1">Перевод на чужой счёт</button>
+    <button id="showCode2">Перевод между своими счетами</button>
+
+    <div id="codeBlock1" style="display: none;">
+            <div class="">Перевод</div>
+        <form method="post" action="{% url 'transactions' %}">
+            {% csrf_token %}
+            <label for="account_from">Отправить со счёта:</label>
+                <select id="account_from">
+                    <option value="wallet_option">Личный счёт</option>
+                    <option value="credit_option">Кредитная карта</option>
+                </select>
+            <br>
+            <label for="account_to">Отправить на счёт:</label>
+              <select id="account_to" name="account_to">
+                    <option value="wallet_option">Личный счёт</option>
+                    <option value="credit_option">Кредитная карта</option>
+              </select>
+            <br>
+            <div class="manually" id="manually" style="display: none;">
+                <label for="id_manually">Введите номер карты</label>
+                <input type="text" id="id_manually" name="custom_account">
+            </div>
+            <br>
+            <label for="id_cash">Введите сумму</label><input id="id_cash" type="text"> <br>
+            <button type="submit">Выполнить перевод</button>
+       </form>
+    </div>
+
+    <div id="codeBlock2" style="display: none;">
+        <div class="codeBlock2">
+            Тут будет форма
+        </div>
+    </div>
+
+    <script>
+
+    document.getElementById('showCode1').addEventListener('click', function() {
+    var codeBlock1 = document.getElementById('codeBlock1');
+    var codeBlock2 = document.getElementById('codeBlock2');
+
+    // Показываем первый блок кода и скрываем второй
+    codeBlock1.style.display = 'block';
+    codeBlock2.style.display = 'none';
+    });
+
+    document.getElementById('showCode2').addEventListener('click', function() {
+        var codeBlock1 = document.getElementById('codeBlock1');
+        var codeBlock2 = document.getElementById('codeBlock2');
+
+        // Показываем второй блок кода и скрываем первый
+        codeBlock1.style.display = 'none';
+        codeBlock2.style.display = 'block';
+    });
+    </script>
+</body>
+</html>

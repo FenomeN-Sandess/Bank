@@ -24,9 +24,16 @@
         <label for="id_itn"> Номер ИНН </label>
         <input id="id_itn" type="text" name="itn">
     </div>
+
     <div class="reg_form_input_block">
         <button type="submit">Зарегистрировать пользователя</button>
     </div>
+
+    {% if response %}
+            <div class="message_error">Вы ввели не валидные данные. Попробуйте снова. </div>
+    {% endif %}
+
+
 
 </form>
 

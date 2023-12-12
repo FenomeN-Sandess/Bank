@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание личного счёта пользователю</title>
+</head>
+<body>
+    <div class="message_into">Желаете создать пользователю личный счёт?</div>
+    <hr>
+    <form method="post" action="{% url 'reg_form_wallet_employee' %}">
+        {% csrf_token %}
+        <div class="username"><label for="id_username">Имя пользователя:</label><input id="id_username" type="text"></div>
+        <div class="passport_series">
+            <label for="id_passport">Введите серию и номер паспорта клиента:</label>
+            <div class="passport_input" id="id_passport">
+                <input name="series" type="text">
+                <input name="number" type="text">
+            </div>
+
+        </div>
+        <div class="-"><label for="id_currency">Валюта: </label>
+            <select name="currency" id="id_currency">
+                <option value="RU">Рубль</option>
+                <option value="USA">Доллар</option>
+            </select>
+        </div>
+        <hr>
+    <button type="submit">Создать личный счёт</button>
+    </form>
+    <hr>
+    <a href="/private_office">Вернуться назад</a> <br>
+    <a href="/">Вернуться на главную страницу</a>
+</body>
+</html>

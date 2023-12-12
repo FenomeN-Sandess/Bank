@@ -5,6 +5,7 @@
     <title>Личный кабинет</title>
 </head>
 <body>
+    <div class="back_to_home"><a href="/">Вернуться назад</a></div>
     <hr>
     <div class="personal_info">Персональная информация
     </div>
@@ -13,7 +14,7 @@
     <div class="phone_number">Номер телефона: +7{{ phone }}</div>
     <div class="date_of_birth">Дата рождения: {{ birth }}</div>
     <div class="itn">Номер ИНН: {{ itn }}</div>
-    <div class="back_to_home"><a href="/">Вернуться назад</a></div>
+
     <hr>
     {% if isThere_wallet %}
         Блок управления личным счётом и кредитной картой <br>
@@ -34,8 +35,7 @@
             <br>
         {% endif %}
         <hr>
-        <a href="">Перевод между своими счетами</a> <br>
-        <a href="">Перевод на карту пользователя</a>
+        <a href="{% url "transactions" %}">Перевод денежных средств</a> <br>
     {% else %}
         <div class="notThere_wallet_message">У вас ещё нет личного счёта.<br> Завести? <br>
             <a href="/creating_wallet">Завести личный счёт</a>

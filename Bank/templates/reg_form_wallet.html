@@ -5,6 +5,8 @@
     <title>Создание личного счёта</title>
 </head>
 <body>
+
+
     <form method="post" action="{% url 'reg_form_wallet' %}">
         {% csrf_token %}
         <div class="-"><label for="id_currency">Валюта: </label>
@@ -14,7 +16,7 @@
             </select>
         </div>
     <div class="-"><label for="id_walletNumber">Введите номер карты: </label><input name="wallet_number" id="id_walletNumber" type="text"></div>
-    <button type="submit">Создать личный счёт</button>
+    <button type="submit">Создать личный счёт пользователю</button>
     </form>
     <hr>
     <a href="/private_office">Вернуться назад</a> <br>

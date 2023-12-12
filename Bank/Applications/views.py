@@ -3,87 +3,39 @@ from .forms import *
 from .models import *
 from django.http import HttpResponse
 from django.contrib.auth import logout, authenticate, login
+from .procedure import *
 
-def is_there_group(user) -> bool: # Функция, проверяющая принадлежит ли какой-либо группе пользователь
-    return (len(user.groups.all()) > 0)
-def check_group(user, name_group: str) -> bool: # Проверяет, принадлежит ли пользователь данной группе
-    return Group.objects.get(name = name_group) in user.groups.all()
 def log(request):
     logout(request)
     return render(request, "index.html")
-def about(request):
-    return render(request, "about.html")
 def login_view(request):
+    request_off: bool = False
+    message_off: str = "Учетная запись отключена"
+    request_error: bool = False
+    message_error: str = "Неверный логин или пароль"
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             form_data = form.cleaned_data
-            user = authenticate(username= form_data['username'], password=form_data['password'])
+            user = authenticate(username=form_data['username'], password=form_data['password'])
             if user is not None:
                 if user.is_active:
                     login(request, user)
                     return redirect("/")
                 else:
-                    return HttpResponse("Учетная запись отключена")
+                    request_off = True
             else:
-                return HttpResponse("Неверный логин или пароль")
-    return render(request, "login.html")
-def add_group(user, str_group):
-    group = Group.objects.get(name=str_group)
-    user.groups.add(group)
-    user.save()
-def check_profile_existence(current_user) -> bool: # На вход принимается модель пользователя
-    try:
-        CustomUser.objects.get(user=current_user)
-        return True
-    except CustomUser.DoesNotExist:
-        return False
-def check_user_existence(str_user) -> bool:
-    try:
-        User.objects.get(username=str_user)
-        return True
-    except User.DoesNotExist:
-        return False
-def check_wallet_existence(user):
-    try:
-        Wallet.objects.get(owner=user.customuser)
-        return True
-    except Wallet.DoesNotExist:
-        return False
-def check_credit_existence(user):
-    if check_wallet_existence(user):
-        try:
-            wallet = Wallet.objects.get(owner = user.customuser)
-            CreditCard.objects.get(wallet = wallet)
-            return True
-        except CreditCard.DoesNotExist:
-            return False
-    return False
-def check_session_existence(request) -> bool:
-    try:
-        User.objects.get(username=request.session.get("saved_username"))
-        return True
-    except User.DoesNotExist:
-        return False
-def save_profile(current_profile, form_profile):
-    current_profile.name = form_profile.cleaned_data["name"]
-    current_profile.itn = form_profile.cleaned_data["itn"]
-    current_profile.phone_number = form_profile.cleaned_data['phone_number']
-    current_profile.date_of_birth = form_profile.cleaned_data['date_of_birth']
-    current_profile.save()
-def save_wallet(wallet, form_wallet):
-    wallet.wallet_number = form_wallet.cleaned_data["wallet_number"]
-    wallet.currency = form_wallet.cleaned_data["currency"]
-    wallet.save()
-def define_str_currency(user):
-    currency = user.customuser.wallet.currency
-    if currency == "USA":
-        result = "$"
-    elif currency == "RU":
-        result = "₽"
-    else:
-        result = str()
-    return result
+                request_error = True
+    content = {
+        "request_off": request_off,
+        "request_error": request_error,
+    }
+    if request_off:
+        content.update({"message_off": message_off})
+    if request_error:
+        content.update({"message_error": message_error})
+
+    return render(request, "login.html", content)
 def index(request):
     user = request.user  # Текущий пользователь
     client = False
@@ -110,7 +62,6 @@ def register(request):
     user = request.user
     if not(user.is_authenticated and check_group(user, "Employee")):
         return redirect("/")
-
     if user.is_authenticated:
         message = str()
         if request.method == 'POST':
@@ -131,20 +82,24 @@ def registerProfile(request):
     if not(user.is_authenticated and check_group(user, "Employee") and check_session_existence(request)):
         return redirect("/")
     text = str()
+    response: bool = False
     current_user = User.objects.get(username=request.session.get("saved_username"))
     if request.method == "POST":
-        current_profile = CustomUser.objects.create(user=current_user)   # Создаём запись в БД о пользователе
         form_profile = ProfileForm(request.POST)
         if form_profile.is_valid():
+            current_profile = CustomUser.objects.create(user=current_user)  # Создаём запись в БД о пользователе
             save_profile(current_profile, form_profile)
-            return redirect("/")
+            return redirect("/creating_wallet_employee")
+        else:
+            response: bool = True
 
     if (request.session.get("saved_username") and not(check_profile_existence(current_user))):
         if not(text):
-            text = request.session.get("saved_username") # Нужно не забыть в конце почистить сессию
-        return render(request, "reg_form_profile.html", {"text": text})
+            text = request.session.get("saved_username")
+        return render(request, "reg_form_profile.html", {"text": text, "response": response})
     else:
         return redirect("/")
+
 def personalArea(request):
     user = request.user
     if not(user.is_authenticated and check_group(user, "Client")):
@@ -158,8 +113,8 @@ def personalArea(request):
     date_of_birth = profile.date_of_birth
 
     # Кошелек, если он есть, если нет: переход на страницу с созданием
-    isThere_wallet: bool = check_wallet_existence(user)
-    isThere_credit: bool = check_credit_existence(user)
+    isThere_wallet: bool = check_wallets_existence(Wallet, user)
+    isThere_credit: bool = check_wallets_existence(CreditWallet, user)
 
     amount_wallet = str(user.customuser.wallet.amount) if isThere_wallet else "0.00"
     amount_credit = str(user.customuser.wallet.creditcard.amount) if isThere_credit else "0.00"
@@ -177,17 +132,18 @@ def personalArea(request):
         "message_credit": True,
     }
 
-    if check_wallet_existence(user):
+    if check_wallets_existence(Wallet, user):
         contex.update({"currency": define_str_currency(user), "number_wallet": str(user.customuser.wallet.wallet_number)})
-    if check_credit_existence(user):
-        contex.update({"number_credit": user.customuser.wallet.creditcard.card_number})
+    if check_wallets_existence(CreditWallet, user):
+        contex.update({"number_credit": user.customuser.creditwallet.card_number})
     if request.method == "POST":
+        create_credit(user)
         contex.update({"message_credit": False})
 
     return render(request, "personal.html", contex)
 def registerWallet(request):
     user = request.user
-    if not(user.is_authenticated and check_group(user, "Client") and not(check_wallet_existence(user)) ):
+    if not(user.is_authenticated and check_group(user, "Client") and not(check_wallets_existence(Wallet, user))):
         return redirect("/")
 
     if request.method=="POST":
@@ -196,8 +152,27 @@ def registerWallet(request):
             current_wallet = Wallet.objects.create(owner=user.customuser)
             save_wallet(current_wallet, form_wallet)
             return redirect("/private_office")
-        elif check_wallet_existence(user):
+        elif check_wallets_existence(Wallet, user):
             return HttpResponse("У данного пользователя уже есть кошелек")
         else:
             return HttpResponse("Данные просто не валидны")
     return render(request, "reg_form_wallet.html")
+def registerWalletEmployee(request):
+    user = request.user
+    if not(user.is_authenticated and check_group(user, "Employee")):
+        return redirect("/")
+    return render(request, "reg_form_wallet_employee.html")
+def transactions(request):
+    user=request.user
+    if not(user.is_authenticated and check_group(user, "Client") and check_wallets_existence(Wallet, user)):
+        return redirect("/")
+    # if request.method=="POST":
+
+    return render(request, "transactions.html")
+
+def management(request):
+    user=request.user
+    if not(user.is_authenticated and check_group(user, "Employee")):
+        return redirect("/")
+
+    return render(request, "management.html")
