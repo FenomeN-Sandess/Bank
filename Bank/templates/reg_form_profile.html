@@ -9,8 +9,19 @@
 <form class="reg_form_profile" action="" method="post">
     {% csrf_token %}
     <div>
-        <label for="id_name"> Имя пользователя</label>
-        <input id="id_name" type="text" name="name">
+        <label for="id_name"> ФИО пользователя:</label>
+        <div id="id_name" class="names">
+            <input type="text" name="surname">
+            <input type="text" name="name">
+            <input type="text" name="patronymic">
+        </div>
+    </div>
+    <div class="passport_series">
+        <label for="id_passport">Введите серию и номер паспорта клиента:</label>
+        <div class="passport_input" id="id_passport">
+            <input name="passport_series" type="text">
+            <input name="passport_number" type="text">
+        </div>
     </div>
     <div>
         <label for="id_number"> Номер телефона </label>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Закрытие счёта пользователя</title>
+</head>
+<body>
+<form method="post" action="{% url "closing_wallet" %}">
+    {% csrf_token %}
+    <label for="id_wallet_number">Введите номер счёта пользователя: </label>
+    <input name="number" id="wallet_number" type="text">
+    <br>
+    <label for="id_checkbox">Пользователь подтверждает действие</label>
+    <input id="id_checkbox" name="checkbox" type="checkbox">
+    <hr>
+    <button>Закрыть счёт</button>
+    {% if request %}
+        <hr>{{ request_message }}
+    {% endif %}
+</form>
+</body>
+</html>

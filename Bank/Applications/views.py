@@ -89,7 +89,7 @@ def registerProfile(request):
         if form_profile.is_valid():
             current_profile = CustomUser.objects.create(user=current_user)  # Создаём запись в БД о пользователе
             save_profile(current_profile, form_profile)
-            return redirect("/creating_wallet_employee")
+            return redirect("/choice_wallet")
         else:
             response: bool = True
 
@@ -99,7 +99,6 @@ def registerProfile(request):
         return render(request, "reg_form_profile.html", {"text": text, "response": response})
     else:
         return redirect("/")
-
 def personalArea(request):
     user = request.user
     if not(user.is_authenticated and check_group(user, "Client")):
@@ -143,25 +142,48 @@ def personalArea(request):
     return render(request, "personal.html", contex)
 def registerWallet(request):
     user = request.user
-    if not(user.is_authenticated and check_group(user, "Client") and not(check_wallets_existence(Wallet, user))):
+    if not(user.is_authenticated and check_group(user, "Employee")):
         return redirect("/")
-
+    contex = {
+        "request": False,
+        "request_message": str()
+    }
     if request.method=="POST":
-        form_wallet = WalletForm(request.POST)
-        if form_wallet.is_valid():
-            current_wallet = Wallet.objects.create(owner=user.customuser)
-            save_wallet(current_wallet, form_wallet)
-            return redirect("/private_office")
-        elif check_wallets_existence(Wallet, user):
-            return HttpResponse("У данного пользователя уже есть кошелек")
+        form_wallet = BaseWallet(request.POST)
+        name_user = form_wallet.data["username"]
+        current_user = User.objects.get(username=name_user)
+        existence: bool = check_wallets_existence(Wallet, current_user)
+        if check_user_existence(name_user) and existence:
+            contex.update({"request": True, "request_message": "У данного пользователя уже есть кошелек"})
         else:
-            return HttpResponse("Данные просто не валидны")
-    return render(request, "reg_form_wallet.html")
-def registerWalletEmployee(request):
+            if form_wallet.is_valid():
+                wallet = Wallet.objects.create(owner=current_user.customuser)
+                save_wallet(wallet, form_wallet)
+                return redirect("/management")
+            else:
+                contex.update({"request": True, "request_message": "Данные не валидны"})
+    return render(request, "reg_form_wallet.html", contex)
+def closeWallets(request):
     user = request.user
     if not(user.is_authenticated and check_group(user, "Employee")):
         return redirect("/")
-    return render(request, "reg_form_wallet_employee.html")
+    contex = {
+        "request": False,
+        "request_message": str()
+    }
+
+    if request.method=="POST":
+        form = closingForm(request.POST)
+        numbers_wallet: list = [number.number for number in (Wallet.objects.only("number").all())]
+        numbers_credit: list = [number.number for number in (CreditWallet.objects.only("number").all())]
+        numbers_savings: list = [number.number for number in (SavingsWallet.objects.only("number").all())]
+        number = form.data["number"]
+        if not(number in (numbers_wallet+numbers_credit+numbers_savings)):
+            contex.update({"request": True, "request_message": "Пользователь не числится числится в базе"})
+        elif form.is_valid() and type_wallet(number):
+            type_wallet(number).objects.get(number=number).delete()
+            contex.update({"request": True, "request_message": "Кошелек успешно удалён"})
+    return render(request, "closing_wallet.html", contex)
 def transactions(request):
     user=request.user
     if not(user.is_authenticated and check_group(user, "Client") and check_wallets_existence(Wallet, user)):
@@ -169,10 +191,15 @@ def transactions(request):
     # if request.method=="POST":
 
     return render(request, "transactions.html")
-
 def management(request):
     user=request.user
     if not(user.is_authenticated and check_group(user, "Employee")):
         return redirect("/")
 
     return render(request, "management.html")
+def choice(request):
+    user=request.user
+    if not(user.is_authenticated and check_group(user, "Employee")):
+        return redirect("/")
+
+    return render(request, "choice_wallet.html")

@@ -40,9 +40,15 @@ def check_user_existence(str_user) -> bool:
         return False
 
 
-def check_wallets_existence(wallet, user):
+def check_wallets_existence(wallet, user) -> bool:
     try:
         wallet.objects.get(owner=user.customuser)
+        return True
+    except wallet.DoesNotExist:
+        return False
+def check_wallets_existence_withNumber(wallet, number) -> bool:
+    try:
+        wallet.objects.get(number=number)
         return True
     except wallet.DoesNotExist:
         return False
@@ -58,6 +64,10 @@ def check_session_existence(request) -> bool:
 
 def save_profile(current_profile, form_profile):
     current_profile.name = form_profile.cleaned_data["name"]
+    current_profile.surname = form_profile.cleaned_data["surname"]
+    current_profile.patronymic = form_profile.cleaned_data["patronymic"]
+    current_profile.passport_series = form_profile.cleaned_data["passport_series"]
+    current_profile.passport_number = form_profile.cleaned_data["passport_number"]
     current_profile.itn = form_profile.cleaned_data["itn"]
     current_profile.phone_number = form_profile.cleaned_data['phone_number']
     current_profile.date_of_birth = form_profile.cleaned_data['date_of_birth']
@@ -65,7 +75,8 @@ def save_profile(current_profile, form_profile):
 
 
 def save_wallet(wallet, form_wallet):
-    wallet.wallet_number = form_wallet.cleaned_data["wallet_number"]
+    numbers: list = [name.number for name in Wallet.objects.only("number").all()] + [number.number for number in CreditWallet.objects.only("number").all()] + [number.number for number in SavingsWallet.objects.only("number").all()]
+    wallet.number = random_nameCard(numbers)
     wallet.currency = form_wallet.cleaned_data["currency"]
     wallet.save()
 
@@ -79,10 +90,19 @@ def define_str_currency(user):
     else:
         result = str()
     return result
+def type_wallet(number):
+    if check_wallets_existence_withNumber(Wallet, number):
+        return Wallet
+    elif check_wallets_existence_withNumber(CreditWallet, number):
+        return CreditWallet
+    elif check_wallets_existence_withNumber(SavingsWallet, number):
+        return SavingsWallet
+    else:
+        return None
 
 
 def random_nameCard(names):
-    value = str(random.randint(1000000000000000, 9999999999999999))
+    value = str(random.randint(10000000000000000000, 99999999999999999999))
     if value not in names:
         return value
     else:

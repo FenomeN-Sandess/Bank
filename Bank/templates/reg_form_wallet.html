@@ -6,20 +6,26 @@
 </head>
 <body>
 
-
     <form method="post" action="{% url 'reg_form_wallet' %}">
         {% csrf_token %}
-        <div class="-"><label for="id_currency">Валюта: </label>
+        <label for="id_username">Введите логин пользователя</label>
+        <input id="id_username" name="username" type="text">
+        <hr>
+        <div class="-"><label for="id_currency">Выберете валюту для сберегательного счёта: </label>
             <select name="currency" id="id_currency">
                 <option value="RU">Рубль</option>
                 <option value="USA">Доллар</option>
             </select>
         </div>
-    <div class="-"><label for="id_walletNumber">Введите номер карты: </label><input name="wallet_number" id="id_walletNumber" type="text"></div>
+        <hr>
     <button type="submit">Создать личный счёт пользователю</button>
     </form>
     <hr>
-    <a href="/private_office">Вернуться назад</a> <br>
+    {% if request %}
+    	{{ request_message }}
+        <hr>
+    {% endif %} 
+    <a href="/management">Вернуться назад</a> <br>
     <a href="/">Вернуться на главную страницу</a>
 </body>
 </html>

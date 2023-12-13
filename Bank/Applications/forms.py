@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import *
 from django import forms
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Шаблонная тема - наследник формы для создания пользователя
 class UserRegistrationForm(UserCreationForm):
@@ -16,27 +17,34 @@ class UserRegistrationForm(UserCreationForm):
         return user
 class ProfileForm(forms.Form):
     name = forms.CharField(max_length=100, required=False)
+    surname = forms.CharField(max_length=100, required=False)
+    patronymic = forms.CharField(max_length=100, required=True)
+    passport_series = forms.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
+    passport_number = forms.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)])
     itn = forms.CharField(min_length=12, max_length=12, required=False)
     phone_number = forms.CharField(max_length=15, required=False)
     date_of_birth = forms.DateField(required=False)
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
-class WalletForm(forms.Form):
+class BaseWallet(forms.Form):
     CURRENCY_CHOICES = [
         ("RU", "Рубль"),
         ("USA", "Доллар")
     ]
-
+    username = forms.CharField(required=False, max_length=100)
     currency = forms.ChoiceField(choices=CURRENCY_CHOICES)
-    wallet_number = forms.IntegerField(min_value=1000000000, max_value=9999999999, required=False)
-class CreditForm(forms.Form):
-    card_number = forms.IntegerField(min_value=1000000000, max_value=9999999999, required=False)
+class SavingsForm(BaseWallet):
+    rate = forms.DecimalField(max_digits=5, decimal_places=2)
+class CreditForm(BaseWallet):
+    percent = forms.DecimalField(max_digits=5, decimal_places=2)
 class TransactionsForm(forms.Form):
     choice = [
         ("wallet_option", "Wallet"),
         ("credit_option", "Credit_Card")
     ]
-
     account_from = forms.ChoiceField(choices=choice)
     account_to = forms.ChoiceField(choices=choice)
+class closingForm(forms.Form):
+    number = forms.CharField(required=False, min_length=20, max_length=20)
+    checkbox = forms.BooleanField(required=True)
