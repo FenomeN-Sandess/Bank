@@ -72,7 +72,7 @@ def save_profile(current_profile, form_profile):
     current_profile.save()
 
 
-def save_wallets_saveField(any_wallet, form_wallet):
+def save_wallet_sameField(any_wallet, form_wallet):
     numbers: list = [name.number for name in Wallet.objects.only("number").all()] + [number.number for number in
                                                                                      CreditWallet.objects.only(
                                                                                          "number").all()] + [
@@ -82,12 +82,12 @@ def save_wallets_saveField(any_wallet, form_wallet):
 
 
 def save_wallet(wallet, form_wallet):
-    save_wallets_saveField(wallet, form_wallet)
+    save_wallet_sameField(wallet, form_wallet)
     wallet.save()
 
 
 def save_credit(credit, form_wallet):
-    save_wallets_saveField(credit, form_wallet)
+    save_wallet_sameField(credit, form_wallet)
     credit.limit = form_wallet.cleaned_data["limit"]
     credit.percent = form_wallet.cleaned_data["percent"]
     credit.amount = credit.limit
@@ -95,13 +95,12 @@ def save_credit(credit, form_wallet):
 
 
 def save_savings(savings, form_wallet):
-    save_wallets_saveField(savings, form_wallet)
+    save_wallet_sameField(savings, form_wallet)
     savings.rate = form_wallet.cleaned_data["rate"]
     savings.save()
 
 
-def define_str_currency(user):
-    currency = user.customuser.wallet.currency
+def define_str_currency(currency):
     if currency == "USA":
         result = "$"
     elif currency == "RU":
@@ -129,8 +128,8 @@ def check_debtExistence(credit) -> bool:
         return True
 
 
-def is_employee(user):
-    if not (user.is_authenticated and check_group(user, "Employee")):
+def is_anyGroup(user, group: str):
+    if not (user.is_authenticated and check_group(user, group)):
         return redirect("/")
 
 

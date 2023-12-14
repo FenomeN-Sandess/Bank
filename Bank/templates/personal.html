@@ -5,42 +5,59 @@
     <title>Личный кабинет</title>
 </head>
 <body>
-    <div class="back_to_home"><a href="/">Вернуться назад</a></div>
-    <hr>
-    <div class="personal_info">Персональная информация
+    <div class="back_to_home">
+        <a href="/">Вернуться назад</a>
     </div>
-    Аватарка:
-    <div class="name">Имя пользователя: {{ name }}</div>
-    <div class="phone_number">Номер телефона: +7{{ phone }}</div>
-    <div class="date_of_birth">Дата рождения: {{ birth }}</div>
+    <br>
+    <div class="personal_info">Персональная информация
+        <br>
+    </div>
+    <div class="name">ФИО пользователя: {{ surname }} {{ name }} {{ patronymic }} </div>
+    <div class="phone_number">Номер телефона: {{ phone_number }}</div>
+    <div class="date_of_birth">Дата рождения: {{ date_of_birth }}</div>
     <div class="itn">Номер ИНН: {{ itn }}</div>
-
-    <hr>
+    <div class="passport_data">
+        <button>Показать серию и номер паспорта</button>
+        Серия и номер паспорта: {{ passport_series }} {{ passport_number }}
+    </div>
+    <br>
+    <div class="message_wallets">Блок управления личными счетами</div>
+        <br>
+    <button>Сберегательный счёт</button>
+    <button>Накопительный счёт</button>
+    <button>Кредитный счёт</button>
+    <br><br>
     {% if isThere_wallet %}
-        Блок управления личным счётом и кредитной картой <br>
-        <hr>
         Номер счёта: {{ number_wallet }} <br>
-        Остаток на счету: {{ amount_wallet }} {{ currency }} <br>
-        {% if isThere_credit %}
-            <hr>
-            Номер кредитной карты: {{ number_credit }} <br>
-            Остаток на кредитной карте: {{ amount_credit }} {{ currency }}<br>
-        {% else %}
-            <div class="message">У вас нет кредитной карты </div>
-            {% if message_credit %}
-            <form method="post" action="{% url "personal" %}">
-                {% csrf_token %}
-                <button type="submit">Отправить запрос на создание кредитной карты</button>
-            </form>{% else %} <p>Запрос отправлен</p>{% endif %}
-            <br>
-        {% endif %}
-        <hr>
-        <a href="{% url "transactions" %}">Перевод денежных средств</a> <br>
-    {% else %}
-        <div class="notThere_wallet_message">У вас ещё нет личного счёта.<br> Завести? <br>
-            <a href="/creating_wallet">Завести личный счёт</a>
+        Остаток на сберегательном счету: {{ amount_wallet }} {{ currency_wallet }} <br>
+        <div class="transactions">
+            <a href="{% url "transactions" %}">Перевод денежных средств</a> <br>
         </div>
+    {% else %}
+        <div class="notThere_wallet_message">У вас ещё нет сберегательного счёта. Обратитесь к служащему банка</div>
     {% endif %}
-
+    {% if isThere_credit %}
+        <br>
+        Номер кредитной карты: {{ number_credit }} из {{ limit }} <br>
+        Остаток на кредитном счету: {{ amount_credit }} {{ currency_credit }}<br>
+        Процент по кредиту: {{ percent }}
+        <div class="transactions">
+            <a href="{% url "transactions" %}">Перевод денежных средств</a>
+        </div> <br>
+    {% else %}
+        <br>
+        <div class="notThere_credit_message">У вас нет кредитного счёта. Обратитесь к служащему банка. </div> <br>
+    {% endif %}
+    {% if isThere_savings %}
+        Номер накопительного счёта: {{ number_savings }} <br>
+        Остаток на накопительном счету: {{ amount_savings }} {{ currency_savings }} <br>
+        Ставка: {{ rate }}
+        <div class="transactions">
+            <a href="{% url "transactions" %}">Перевод денежных средств</a> <br>
+        </div>
+    {% else %}
+        <div class="notThere_savings_message">У вас ещё нет накопительного счёта. Обратитесь к служащему банка</div>
+    {% endif %}
+        <br>
 </body>
 </html>

@@ -10,8 +10,8 @@ class CustomUser(models.Model):
     patronymic = models.CharField(max_length=100, blank=True, null=True)         # Отчество пользователя
     passport_series = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1000), MaxValueValidator(9999)]) # Серия и номер паспорта
     passport_number = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(100000), MaxValueValidator(999999)])
-    itn = models.CharField(max_length=10, blank=True, null=True)                 # ИНН
-    phone_number = models.CharField(max_length=10, blank=True, null=True)        # Номер телефона
+    itn = models.CharField(max_length=14, blank=True, null=True)                 # ИНН
+    phone_number = models.CharField(max_length=15, blank=True, null=True)        # Номер телефона
     date_of_birth = models.DateField(blank=True, null=True)                      # Дата рождения
 
 

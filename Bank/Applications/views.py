@@ -117,7 +117,7 @@ def registerProfile(request):
 
 def registerAnyWallet(request, any_form, wallet, save, html: str):
     user = request.user
-    is_employee(request.user)
+    is_anyGroup(request.user, "Employee")
     contex = {"request": False, "request_message": str()}
     if request.method == "POST":
         form_wallet = any_form(request.POST)
@@ -152,9 +152,7 @@ def registerCreditWallet(request):
 
 
 def closeWallets(request):
-    user = request.user
-    if not (user.is_authenticated and check_group(user, "Employee")):
-        return redirect("/")
+    is_anyGroup(request.user, "Employee")
     contex = {
         "request": False,
         "request_message": str()
@@ -196,59 +194,65 @@ def transactions(request):
 
 
 def management(request):
-    user = request.user
-    if not (user.is_authenticated and check_group(user, "Employee")):
-        return redirect("/")
+    is_anyGroup(request.user, "Employee")
 
     return render(request, "management.html")
 
 
 def choice(request):
-    user = request.user
-    if not (user.is_authenticated and check_group(user, "Employee")):
-        return redirect("/")
+    is_anyGroup(request.user, "Employee")
     return render(request, "choice_wallet.html")
 
 
 def personalArea(request):
     user = request.user
-    if not (user.is_authenticated and check_group(user, "Client")):
-        return redirect("/")
-
-    # Основная инфа о пользователе
+    is_anyGroup(user, "Client")
+    contex_request = {"request": False, "request_message": str()}
     profile = user.customuser
-    name = profile.name
-    itn = profile.itn
-    phone_number = profile.phone_number
-    date_of_birth = profile.date_of_birth
 
-    # Кошелек, если он есть, если нет: переход на страницу с созданием
-    isThere_wallet: bool = check_wallets_existence(Wallet, user)
-    isThere_credit: bool = check_wallets_existence(CreditWallet, user)
-
-    amount_wallet = str(user.customuser.wallet.amount) if isThere_wallet else "0.00"
-    amount_credit = str(user.customuser.wallet.creditcard.amount) if isThere_credit else "0.00"
-
-    # В форме с кошельком организовать выполнение Транзакций
-    contex = {
-        "amount_wallet": amount_wallet,
-        "amount_credit": amount_credit,
-        "name": name,
-        "itn": itn,
-        "phone": phone_number,
-        "birth": date_of_birth,
+    contex_data = {
+        "name": profile.name,
+        "surname": profile.surname,
+        "patronymic": profile.patronymic,
+        "itn": profile.itn,
+        "phone_number": profile.phone_number,
+        "date_of_birth": profile.date_of_birth,
+        "passport_series": profile.passport_series,
+        "passport_number": profile.passport_number
+        }
+    isThere_wallet = check_wallets_existence(Wallet, user)
+    isThere_credit = check_wallets_existence(CreditWallet, user)
+    isThere_savings = check_wallets_existence(SavingsWallet, user)
+    contex_existence = {
         "isThere_wallet": isThere_wallet,
         "isThere_credit": isThere_credit,
-        "message_credit": True,
+        "isThere_savings": isThere_savings
     }
 
-    if check_wallets_existence(Wallet, user):
-        contex.update(
-            {"currency": define_str_currency(user), "number_wallet": str(user.customuser.wallet.wallet_number)})
-    if check_wallets_existence(CreditWallet, user):
-        contex.update({"number_credit": user.customuser.creditwallet.card_number})
-    if request.method == "POST":
-        create_credit(user)
-        contex.update({"message_credit": False})
+    contex_wallets = dict()
+    if isThere_wallet:
+        wallet = Wallet.objects.get(owner=profile)
+        contex_wallets.update({
+            "number_wallet": wallet.number,
+            "amount_wallet": wallet.amount,
+            "currency_wallet": define_str_currency(wallet.currency)
+        })
+    if isThere_credit:
+        credit = CreditWallet.objects.get(owner=profile)
+        contex_wallets.update({
+            "number_credit": credit.number,
+            "amount_credit": credit.amount,
+            "currency_credit": define_str_currency(credit.currency),
+            "limit": credit.limit,
+            "percent": credit.percent
+        })
+    if isThere_savings:
+        savings = SavingsWallet.objects.get(owner=profile)
+        contex_wallets.update({
+            "number_savings": savings.number,
+            "amount_savings": savings.amount,
+            "currency_savings": define_str_currency(savings.currency),
+            "rate": savings.rate
+        })
 
-    return render(request, "personal.html", contex)
+    return render(request, "personal.html", contex_request | contex_data | contex_existence | contex_wallets)
