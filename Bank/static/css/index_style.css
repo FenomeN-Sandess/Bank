@@ -4,13 +4,6 @@ body {
     font-size: 18px;
 }
 
-header {
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-    background: black;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -24,29 +17,34 @@ header {
     position: relative;
 }
 
-/*---NAVIGATION---*/
+/*---HEADER---*/
+
+header {
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    font-weight: bold;
+}
 
 .nav {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .3rem 3rem;
+
     width: 100%;
-    height: 8vh;
+    height: auto;
 
     background: #1B1B1E;
 
-    justify-content: space-between;
-    align-items: center;
-
-    font-weight: bold;
-    font-size: 20px;
-    color: white;
+    font-size: 2rem;
 }
 
 .nav_logo {
     font-family: 'Raleway', sans-serif;
     font-size: 3.5rem;
-    font-weight: bold;
+
     text-transform: uppercase;
-    margin-left: 40px;
 
     background: linear-gradient(-45deg, #FAA916, #A594F9);
     -webkit-background-clip: text;
@@ -54,7 +52,6 @@ header {
 }
 
 .nav_link_bar {
-    margin-right: 30px;
 }
 
 .nav_link {
@@ -64,7 +61,7 @@ header {
     color: #4e4b4b;
     text-decoration: none;
 
-    margin: 0 15px;
+    margin: 0 .3rem;
 
     transition: color .2s linear;
 }
