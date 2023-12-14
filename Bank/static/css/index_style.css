@@ -8,15 +8,6 @@ body {
     box-sizing: border-box;
 }
 
-.intro {
-    width: 100%;
-    height: 150vh;
-
-    background: #b9b9b9;
-
-    position: relative;
-}
-
 /*---HEADER---*/
 
 header {
@@ -42,7 +33,7 @@ header {
 
 .nav_logo {
     font-family: 'Raleway', sans-serif;
-    font-size: 3.5rem;
+    font-size: 3rem;
 
     text-transform: uppercase;
 
@@ -52,22 +43,22 @@ header {
 }
 
 .nav_link_bar {
+    display: flex;
+    align-items: center;
 }
 
 .nav_link {
-    display: inline-block;
-
-    font-size: 20px;
-    color: #4e4b4b;
+    font-size: 1.2rem;
+    color: #6D676E;
     text-decoration: none;
 
-    margin: 0 .3rem;
+    margin: 0 .7rem;
 
     transition: color .2s linear;
 }
 
 .nav_link:hover {
-    color: #ffffff;
+    color: #D7D5D7;
 }
 
 .nav_link:active {
