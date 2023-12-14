@@ -38,7 +38,13 @@ class Wallet(WalletBase):
 
 # Это модель кредитной карты, которая привязана к кошельку
 class CreditWallet(WalletBase):
-    percent = models.DecimalField(default=3, max_digits=5, decimal_places=2)
+    limit = models.DecimalField(default=5000.0, max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
+    percent = models.DecimalField(default=3.00, max_digits=5, decimal_places=2)
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Если объект еще не сохранен (новая запись)
+            self.amount = self.limit
+        super().save(*args, **kwargs)
+
 class SavingsWallet(WalletBase):
     rate = models.DecimalField(default=10, max_digits=5, decimal_places=2, validators=[MinValueValidator(0)])
 

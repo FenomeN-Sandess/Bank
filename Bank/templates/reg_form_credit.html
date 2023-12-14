@@ -5,6 +5,31 @@
     <title>Создание кредитного счёта пользователю</title>
 </head>
 <body>
-
+<hr>
+    <form method="post" action="{% url 'reg_form_credit' %}">
+        {% csrf_token %}
+        <label for="id_username">Введите логин пользователя</label>
+        <input id="id_username" name="username" type="text">
+        <hr>
+        <div class="-"><label for="id_currency">Выберете валюту для сберегательного счёта: </label>
+            <select name="currency" id="id_currency">
+                <option value="RU">Рубль</option>
+                <option value="USA">Доллар</option>
+            </select>
+        </div>
+        <hr>
+        <div class="limit"><label for="id_limit">Введите кредитный лимит </label><input id="id_limit" name="limit" type="text"></div>
+        <hr>
+        <div class="percent"><label for="id_percent">Введите процент аккредитования </label><input id="id_percent" name="percent" type="text"></div>
+    <button type="submit">Создать кредитный счёт пользователю</button>
+    </form>
+    <hr>
+    {% if request %}
+        <div class="request_message">
+            {{ request_message }}
+        </div>
+    {% endif %}
+    <a href="/management">Вернуться назад</a> <br>
+    <a href="/">Вернуться на главную страницу</a>
 </body>
 </html>

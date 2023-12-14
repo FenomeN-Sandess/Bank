@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Создание личного счёта</title>
+    <title>Создание сберегательного счёта</title>
 </head>
 <body>
 
@@ -18,13 +18,14 @@
             </select>
         </div>
         <hr>
-    <button type="submit">Создать личный счёт пользователю</button>
+    <button type="submit">Создать сберегательный счёт пользователю</button>
     </form>
     <hr>
     {% if request %}
-    	{{ request_message }}
-        <hr>
-    {% endif %} 
+        <div class="request_message">
+            {{ request_message }}
+        </div>
+    {% endif %}
     <a href="/management">Вернуться назад</a> <br>
     <a href="/">Вернуться на главную страницу</a>
 </body>

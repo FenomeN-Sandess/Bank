@@ -27,17 +27,19 @@ class ProfileForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
-class BaseWallet(forms.Form):
+class BaseForm(forms.Form):
     CURRENCY_CHOICES = [
         ("RU", "Рубль"),
         ("USA", "Доллар")
     ]
+
     username = forms.CharField(required=False, max_length=100)
     currency = forms.ChoiceField(choices=CURRENCY_CHOICES)
-class SavingsForm(BaseWallet):
+class SavingsForm(BaseForm):
     rate = forms.DecimalField(max_digits=5, decimal_places=2)
-class CreditForm(BaseWallet):
+class CreditForm(BaseForm):
     percent = forms.DecimalField(max_digits=5, decimal_places=2)
+    limit = forms.DecimalField(max_digits=12, decimal_places=2)
 class TransactionsForm(forms.Form):
     choice = [
         ("wallet_option", "Wallet"),

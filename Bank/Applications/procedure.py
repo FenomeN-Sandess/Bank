@@ -14,10 +14,6 @@ def check_group(user, name_group: str) -> bool:  # Проверяет, прин�
     return Group.objects.get(name=name_group) in user.groups.all()
 
 
-def about(request):
-    return render(request, "about.html")
-
-
 def add_group(user, str_group):
     group = Group.objects.get(name=str_group)
     user.groups.add(group)
@@ -46,6 +42,8 @@ def check_wallets_existence(wallet, user) -> bool:
         return True
     except wallet.DoesNotExist:
         return False
+
+
 def check_wallets_existence_withNumber(wallet, number) -> bool:
     try:
         wallet.objects.get(number=number)
@@ -74,11 +72,32 @@ def save_profile(current_profile, form_profile):
     current_profile.save()
 
 
+def save_wallets_saveField(any_wallet, form_wallet):
+    numbers: list = [name.number for name in Wallet.objects.only("number").all()] + [number.number for number in
+                                                                                     CreditWallet.objects.only(
+                                                                                         "number").all()] + [
+                        number.number for number in SavingsWallet.objects.only("number").all()]
+    any_wallet.number = random_nameCard(numbers)
+    any_wallet.currency = form_wallet.cleaned_data["currency"]
+
+
 def save_wallet(wallet, form_wallet):
-    numbers: list = [name.number for name in Wallet.objects.only("number").all()] + [number.number for number in CreditWallet.objects.only("number").all()] + [number.number for number in SavingsWallet.objects.only("number").all()]
-    wallet.number = random_nameCard(numbers)
-    wallet.currency = form_wallet.cleaned_data["currency"]
+    save_wallets_saveField(wallet, form_wallet)
     wallet.save()
+
+
+def save_credit(credit, form_wallet):
+    save_wallets_saveField(credit, form_wallet)
+    credit.limit = form_wallet.cleaned_data["limit"]
+    credit.percent = form_wallet.cleaned_data["percent"]
+    credit.amount = credit.limit
+    credit.save()
+
+
+def save_savings(savings, form_wallet):
+    save_wallets_saveField(savings, form_wallet)
+    savings.rate = form_wallet.cleaned_data["rate"]
+    savings.save()
 
 
 def define_str_currency(user):
@@ -90,6 +109,8 @@ def define_str_currency(user):
     else:
         result = str()
     return result
+
+
 def type_wallet(number):
     if check_wallets_existence_withNumber(Wallet, number):
         return Wallet
@@ -101,19 +122,21 @@ def type_wallet(number):
         return None
 
 
+def check_debtExistence(credit) -> bool:
+    if int(credit.amount)==int(credit.limit):
+        return False
+    else:
+        return True
+
+
+def is_employee(user):
+    if not (user.is_authenticated and check_group(user, "Employee")):
+        return redirect("/")
+
+
 def random_nameCard(names):
     value = str(random.randint(10000000000000000000, 99999999999999999999))
     if value not in names:
         return value
     else:
         return random_nameCard(names)
-
-
-def create_credit(user):
-    if check_wallets_existence(CreditWallet, user):
-        return HttpResponse("Кредитная карта уже оформлена")
-    else:
-        card = CreditWallet.objects.create(owner=user.customuser)
-        names_card: list = [name for name in CreditWallet.objects.only("card_number").all()]
-        card.card_number = random_nameCard(names_card)
-        card.save()
