@@ -50,3 +50,6 @@ class TransactionsForm(forms.Form):
 class closingForm(forms.Form):
     number = forms.CharField(required=False, min_length=20, max_length=20)
     checkbox = forms.BooleanField(required=True)
+
+class anyForm(forms.Form):
+    anyField = forms.CharField(required=False, max_length=20, min_length=15)
