@@ -61,11 +61,33 @@ header {
     color: #D7D5D7;
 }
 
-.nav_link:active {
-    color: #843b3b;
+/*SECTION*/
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background: #FFF;
+}
+
+/*ELEMENTS*/
+
+.content_container {
+    width: 25vw;
+    height: 33vh;
+    padding: .5rem;
+}
+
+.content_block {
+    width: 100%;
+    height: 100%;
+    background: #A594F9;
 }
 
 footer {
     width: 100%;
     height: 10vh;
+    background: black;
 }

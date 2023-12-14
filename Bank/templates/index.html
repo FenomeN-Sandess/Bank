@@ -20,49 +20,64 @@
 
 <body>
 
-<header>
-    <div class="nav">
-        <div class="nav_logo">
-            Course.Bank
-        </div>
-        <nav class="nav_link_bar">
-            {% block sidebar %}
-                <a class="nav_link" href="/about/"> О нас </a>
-                {% if admin %}
-                    <a href="/administation/" class="nav_link">Администрирование</a>
-                {% endif %}
-                {% if client and profile %}
-                    <a href="/private_office/" class="nav_link">Личный кабинет</a>
-                 {% endif %}
-                {% if authorization %} {# Проверка на авторизацию пользователя #}
-                    {% if employee %} {# Проверка на группу админ или служащий #}
-                        <a class="nav_link" href="/management/"> Управление клиентскими данными и счетами </a>
+    <header>
+        <div class="nav">
+            <div class="nav_logo">
+                Course.Bank
+            </div>
+            <nav class="nav_link_bar">
+                {% block sidebar %}
+                    <a class="nav_link" href="/about/"> О нас </a>
+                    {% if admin %}
+                        <a href="/administation/" class="nav_link">Администрирование</a>
                     {% endif %}
-                    <a class="nav_link" href="/logout/"> Выход </a>
-                {% else %}
-                    <a class="nav_link" href="/login/"> Вход </a>
-                {% endif %}
-            {% endblock %}
-        </nav>
-    </div>
-</header>
+                    {% if client and profile %}
+                        <a href="/private_office/" class="nav_link">Личный кабинет</a>
+                     {% endif %}
+                    {% if authorization %} {# Проверка на авторизацию пользователя #}
+                        {% if employee %} {# Проверка на группу админ или служащий #}
+                            <a class="nav_link" href="/management/"> Управление клиентскими данными и счетами </a>
+                        {% endif %}
+                        <a class="nav_link" href="/logout/"> Выход </a>
+                    {% else %}
+                        <a class="nav_link" href="/login/"> Вход </a>
+                    {% endif %}
+                {% endblock %}
+            </nav>
+        </div>
+    </header>
 
-<div class="intro">
+    <section>
+        <div class="content_container">
+            <div class="content_block">
 
-</div>
+            </div>
+        </div>
 
-<br><br><br>
-<div class="Information">
-   {% if authorization %}
-        Информация о пользователе: <br>
-    	Логин: {{ login }} <br>
-        Роли: {% for group in groups %} {{ group.name }} {% endfor %}
-    {% endif %}
-</div>
+        <div class="content_container">
+            <div class="content_block">
 
-<footer>
+            </div>
+        </div>
 
-</footer>
+        <div class="content_container">
+            <div class="content_block">
+
+            </div>
+        </div>
+    </section>
+
+{#    <div class="Information">#}
+{#       {% if authorization %}#}
+{#            Информация о пользователе: <br>#}
+{#            Логин: {{ login }} <br>#}
+{#            Роли: {% for group in groups %} {{ group.name }} {% endfor %}#}
+{#        {% endif %}#}
+{#    </div>#}
+
+    <footer>
+
+    </footer>
 
 </body>
 
