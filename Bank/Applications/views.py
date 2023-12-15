@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
+from unicodedata import decimal
+
 from .forms import *
 from .models import *
 from django.http import HttpResponse
 from django.contrib.auth import logout, authenticate, login
 from .procedure import *
-
+from decimal import Decimal
 
 def log(request):
     logout(request)
@@ -214,6 +216,9 @@ def transactions(request):
 
     profile = user.customuser
     if request.method=="POST":
+
+        comission = 0.03
+
         form_transfer = TransactionsForm(request.POST)
         choice_dict = dict(form_transfer.choice)
         if form_transfer.is_valid():
@@ -229,10 +234,18 @@ def transactions(request):
                 wallet_to = type_wallet_to.objects.get(owner=profile)
             if wallet_from == wallet_to:
                 contex_request.update({"request": True, "request_message": "Выберите кошелек, на который планируете произвести оплату"})
+
             else:
+                currency_to = wallet_to.currency
+                currency_from = wallet_from.currency
                 wallet_add = form_transfer.cleaned_data["sum"]
                 if wallet_from.amount >= wallet_add:
-                    wallet_to.amount += wallet_add
+                    if currency_to == currency_from:
+                        wallet_to.amount += wallet_add
+                    elif currency_from == "RU":
+                        wallet_to.amount += (wallet_add/90)*Decimal(f"{1 - comission}")
+                    else:
+                        wallet_to.amount += (wallet_add*90)*Decimal(f"{1 - comission}")
                     wallet_from.amount -= wallet_add
                     wallet_from.save()
                     wallet_to.save()
