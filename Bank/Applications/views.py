@@ -238,6 +238,7 @@ def transactions(request):
     contex = contex_bool | contex_existence | contex_request | contex_data
     return render(request, "transactions.html", contex)
 
+
 def management(request):
     is_anyGroup(request.user, "Employee")
 
