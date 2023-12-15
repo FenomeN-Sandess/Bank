@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect
 from unicodedata import decimal
-
 from .forms import *
 from .models import *
-from django.http import HttpResponse
-from django.contrib.auth import logout, authenticate, login
 from .procedure import *
 from decimal import Decimal
 
@@ -185,6 +182,7 @@ def closeWallets(request):
                 contex.update({"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
     return render(request, "closing_wallet.html", contex)
 
+
 def transactions(request):
     user = request.user
 
@@ -216,9 +214,7 @@ def transactions(request):
 
     profile = user.customuser
     if request.method=="POST":
-
         comission = 0.03
-
         form_transfer = TransactionsForm(request.POST)
         choice_dict = dict(form_transfer.choice)
         if form_transfer.is_valid():
@@ -321,3 +317,7 @@ def personalArea(request):
         })
 
     return render(request, "personal.html", contex_data | contex_existence | contex_wallets)
+
+
+def administration(request):
+    return render(request, "administration.html")

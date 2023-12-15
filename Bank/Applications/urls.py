@@ -16,5 +16,6 @@ urlpatterns = [
     path("transactions/", views.transactions, name="transactions"),
     path("management/", views.management, name="management"),
     path("choice_wallet/", views.choice, name="choice_wallet"),
-    path("closing_wallet/", views.closeWallets, name="closing_wallet")
+    path("closing_wallet/", views.closeWallets, name="closing_wallet"),
+    path("administration/", views.administration, name="administration")
 ]
