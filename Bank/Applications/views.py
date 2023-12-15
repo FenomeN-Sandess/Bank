@@ -183,15 +183,60 @@ def closeWallets(request):
                 contex.update({"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
     return render(request, "closing_wallet.html", contex)
 
-
 def transactions(request):
     user = request.user
-    if not (user.is_authenticated and check_group(user, "Client") and check_wallets_existence(Wallet, user)):
+
+    if not (user.is_authenticated and check_group(user, "Client") and
+            (check_wallets_existence(Wallet, user) or check_wallets_existence(CreditWallet, user) or
+             check_wallets_existence(SavingsWallet, user))):
         return redirect("/")
-    # if request.method=="POST":
 
-    return render(request, "transactions.html")
+    isThere_wallet = check_wallets_existence(Wallet, user)
+    isThere_credit = check_wallets_existence(CreditWallet, user)
+    isThere_savings = check_wallets_existence(SavingsWallet, user)
 
+    contex_existence = {
+        "isThere_wallet": isThere_wallet,
+        "isThere_credit": isThere_credit,
+        "isThere_savings": isThere_savings,
+    }
+
+    contex_request = {
+        "request": False,
+        "request_message": str()
+    }
+
+    contex_bool = {
+        "two_wallets": two_wallets_existence(user)
+    }
+
+    contex_data = dict()
+
+    profile = user.customuser
+    if request.method=="POST":
+        form_transfer = TransactionsForm(request.POST)
+        choice_dict = dict(form_transfer.choice)
+        if form_transfer.is_valid():
+            type_wallet_from = choice_dict.get(form_transfer.cleaned_data["account_from"])
+            type_wallet_to = choice_dict.get(form_transfer.cleaned_data["account_to"])
+            wallet_from = type_wallet_from.objects.get(owner=profile)
+            wallet_to = type_wallet_to.objects.get(owner=profile)
+            if wallet_from == wallet_to:
+                contex_request.update({"request": True, "request_message": "Выберите кошелек, на который планируете произвести оплату"})
+            else:
+                wallet_add = form_transfer.cleaned_data["sum"]
+                if wallet_from.amount >= wallet_add:
+                    wallet_to.amount += wallet_add
+                    wallet_from.amount -= wallet_add
+                    wallet_from.save()
+                    wallet_to.save()
+                    contex_request.update({"request": True, "request_message": "Перевод между счетами выполнен"})
+                else:
+                    contex_request.update({"request": True, "request_message": "Недостаточно средств на счету"})
+        else:
+            contex_request.update({"request": True, "request_message": "Введенные данные невалидны"})
+    contex = contex_bool | contex_existence | contex_request | contex_data
+    return render(request, "transactions.html", contex)
 
 def management(request):
     is_anyGroup(request.user, "Employee")
@@ -207,7 +252,6 @@ def choice(request):
 def personalArea(request):
     user = request.user
     is_anyGroup(user, "Client")
-    contex_request = {"request": False, "request_message": str()}
     profile = user.customuser
 
     contex_data = {
@@ -220,13 +264,14 @@ def personalArea(request):
         "passport_series": profile.passport_series,
         "passport_number": profile.passport_number
         }
+
     isThere_wallet = check_wallets_existence(Wallet, user)
     isThere_credit = check_wallets_existence(CreditWallet, user)
     isThere_savings = check_wallets_existence(SavingsWallet, user)
     contex_existence = {
         "isThere_wallet": isThere_wallet,
         "isThere_credit": isThere_credit,
-        "isThere_savings": isThere_savings
+        "isThere_savings": isThere_savings,
     }
 
     contex_wallets = dict()
@@ -255,4 +300,4 @@ def personalArea(request):
             "rate": savings.rate
         })
 
-    return render(request, "personal.html", contex_request | contex_data | contex_existence | contex_wallets)
+    return render(request, "personal.html", contex_data | contex_existence | contex_wallets)

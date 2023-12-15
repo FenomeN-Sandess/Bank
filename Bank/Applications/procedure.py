@@ -44,6 +44,17 @@ def check_wallets_existence(wallet, user) -> bool:
         return False
 
 
+def two_wallets_existence(user) -> int:
+    count = 0
+    for wallet in [Wallet, CreditWallet, SavingsWallet]:
+        if check_wallets_existence(wallet, user):
+            count += 1
+    if count >= 2:
+        return 1
+    else:
+        return 0
+
+
 def check_wallets_existence_withNumber(wallet, number) -> bool:
     try:
         wallet.objects.get(number=number)
@@ -122,7 +133,7 @@ def type_wallet(number):
 
 
 def check_debtExistence(credit) -> bool:
-    if int(credit.amount)==int(credit.limit):
+    if int(credit.amount) == int(credit.limit):
         return False
     else:
         return True

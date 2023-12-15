@@ -38,8 +38,8 @@
     {% endif %}
     {% if isThere_credit %}
         <br>
-        Номер кредитной карты: {{ number_credit }} из {{ limit }} <br>
-        Остаток на кредитном счету: {{ amount_credit }} {{ currency_credit }}<br>
+        Номер кредитной карты: {{ number_credit }} <br>
+        Остаток на кредитном счету: {{ amount_credit }}  {{ currency_credit }} из {{ limit }}  {{ currency_credit }} <br>
         Процент по кредиту: {{ percent }}
         <div class="transactions">
             <a href="{% url "transactions" %}">Перевод денежных средств</a>
