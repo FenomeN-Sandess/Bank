@@ -54,16 +54,79 @@
 
     <div id="transfer_to_accounts" style="display: none;">
         <div class="transfer_to_accounts">
-            Тут будет форма
+            Перевод на счёт пользователя
         </div>
+                <form method="post" action="{% url 'transactions' %}">
+            {% csrf_token %}
+
+            <label for="account_from">Отправить со счёта:</label>
+            <select name="account_from" id="account_from">
+                {% if isThere_wallet %}
+                    <option value="wallet_option">Сберегательный счёт</option>
+                {% endif %}
+                {% if isThere_credit %}
+                	<option value="credit_option">Кредитный счёт</option>
+                {% endif %}
+                {% if isThere_savings %}
+                	<option value="savings_option">Накопительный счёт</option>
+                {% endif %}
+            </select>
+
+            <br>
+
+            <label for="account_to">Отправить на счёт:</label>
+                    <label for="id_wallet_number"></label><input id="id_wallet_number" name="account_to_number" type="text">
+            <br>
+            <label for="id_cash">Введите сумму</label><input id="id_cash" name="sum" type="number"> <br>
+
+            <button type="submit">Выполнить перевод</button>
+
+        </form>
     </div>
 
     {% else %}
 
     <div id="transfer_to_accounts">
         <div class="transfer_to_accounts">
-           Перевод между своими счетами 
+           Перевод на счёт пользователя
         </div>
+            <form method="post" action="{% url 'transactions' %}">
+            {% csrf_token %}
+
+            <label for="account_from">Отправить со счёта:</label>
+            <select name="account_from" id="account_from">
+                {% if isThere_wallet %}
+                    <option value="wallet_option">Сберегательный счёт</option>
+                {% endif %}
+                {% if isThere_credit %}
+                	<option value="credit_option">Кредитный счёт</option>
+                {% endif %}
+                {% if isThere_savings %}
+                	<option value="savings_option">Накопительный счёт</option>
+                {% endif %}
+            </select>
+
+            <br>
+
+            <label for="account_to">Отправить на счёт:</label>
+            <select id="account_to" name="account_to">
+                {% if isThere_wallet %}
+                    <option value="wallet_option">Сберегательный счёт</option>
+                {% endif %}
+                {% if isThere_credit %}
+                	<option value="credit_option">Кредитный счёт</option>
+                {% endif %}
+                {% if isThere_savings %}
+                	<option value="savings_option">Накопительный счёт</option>
+                {% endif %}
+            </select>
+
+            <br>
+            <label for="id_cash">Введите сумму</label><input id="id_cash" name="sum" type="number"> <br>
+
+            <button type="submit">Выполнить перевод</button>
+
+        </form>
     </div>
 
     {% endif %}

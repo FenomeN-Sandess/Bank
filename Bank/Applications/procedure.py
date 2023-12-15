@@ -63,6 +63,12 @@ def check_wallets_existence_withNumber(wallet, number) -> bool:
         return False
 
 
+def define_wallet_withNumber(number):
+    type = type_wallet(number)
+    if type:
+        return type.objects.get(number=number)
+
+
 def check_session_existence(request) -> bool:
     try:
         User.objects.get(username=request.session.get("saved_username"))
@@ -130,6 +136,9 @@ def type_wallet(number):
         return SavingsWallet
     else:
         return None
+
+
+# def define_profile_withNumber(number):
 
 
 def check_debtExistence(credit) -> bool:

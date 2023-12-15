@@ -218,9 +218,15 @@ def transactions(request):
         choice_dict = dict(form_transfer.choice)
         if form_transfer.is_valid():
             type_wallet_from = choice_dict.get(form_transfer.cleaned_data["account_from"])
-            type_wallet_to = choice_dict.get(form_transfer.cleaned_data["account_to"])
             wallet_from = type_wallet_from.objects.get(owner=profile)
-            wallet_to = type_wallet_to.objects.get(owner=profile)
+            number = form_transfer.cleaned_data["account_to_number"]
+            if number:
+                type_wallet_to = type_wallet(number)
+                profile_with_number = define_wallet_withNumber(number).owner
+                wallet_to = type_wallet_to.objects.get(owner=profile_with_number)
+            else:
+                type_wallet_to = choice_dict.get(form_transfer.cleaned_data["account_to"])
+                wallet_to = type_wallet_to.objects.get(owner=profile)
             if wallet_from == wallet_to:
                 contex_request.update({"request": True, "request_message": "Выберите кошелек, на который планируете произвести оплату"})
             else:

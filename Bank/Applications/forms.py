@@ -63,8 +63,9 @@ class TransactionsForm(forms.Form):
     ]
 
     account_from = forms.ChoiceField(choices=choice)
-    account_to = forms.ChoiceField(choices=choice)
+    account_to = forms.ChoiceField(choices=choice, required=False)
     sum = forms.DecimalField(max_digits=12, decimal_places=2, required=True)
+    account_to_number = forms.CharField(required=False, max_length=20, min_length=20)
 
 class closingForm(forms.Form):
     number = forms.CharField(required=False, min_length=20, max_length=20)
