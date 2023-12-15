@@ -83,6 +83,7 @@ section {
     padding: 5rem 0;
     width: 100%;
     height: auto;
+    min-height: 100vh;
     background: #F6F7F8;
 }
 

@@ -1,16 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     {% load static %}
     <link rel="stylesheet" href="{% static "css/index_style.css" %}">
-    <meta charset="UTF-8">
-{#    <link rel="stylesheet" href="{% static "css/about.css" %}">#}
-    <title>О нас</title>
+<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
+
+    <title>{% block title %}About{% endblock %}</title>
 </head>
 <body>
-<header>
-    werfjwepofjkwepofw
-</header>
-<div class="/"><a href="/">Вернуться назад</a></div>
+    <header>
+        <div class="nav">
+            <div class="nav_logo">
+                Course.Bank
+            </div>
+            <nav class="nav_link_bar">
+                {% block sidebar %}
+                    <a class="nav_link" href="/">Вернуться назад</a>
+                    {% if admin %}
+                        <a href="/administation/" class="nav_link">Администрирование</a>
+                    {% endif %}
+                    {% if client and profile %}
+                        <a href="/private_office/" class="nav_link">Личный кабинет</a>
+                     {% endif %}
+                    {% if authorization %} {# Проверка на авторизацию пользователя #}
+                        {% if employee %} {# Проверка на группу админ или служащий #}
+                            <a class="nav_link" href="/management/"> Управление клиентскими данными и счетами </a>
+                        {% endif %}
+                        <a class="nav_link" href="/logout/"> Выход </a>
+                    {% else %}
+                        <a class="nav_link" href="/login/"> Вход </a>
+                    {% endif %}
+                {% endblock %}
+            </nav>
+        </div>
+    </header>
+
+    <section>
+
+    </section>
+
+    <footer>
+        <div class="footer_container">
+            <div class="footer_block">
+                <div class="footer_block_element">
+                    <div class="nav_logo">
+                        Course.Bank
+                    </div>
+                </div>
+                <div class="footer_block_element">
+                    © 2023 - 2023 Course.Bank
+                </div>
+                <div class="footer_block_element">
+                    +89005553535
+                </div>
+                <div class="footer_block_element">
+                    course.bank@gmail.com
+                </div>
+            </div>
+            <div class="footer_block">
+
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
