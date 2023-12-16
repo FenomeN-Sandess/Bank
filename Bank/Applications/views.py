@@ -6,6 +6,7 @@ from .procedure import *
 from decimal import Decimal
 from django.views.generic import ListView, View, TemplateView, DetailView, CreateView, UpdateView, DeleteView
 from django.db.models import Q
+from django.http import JsonResponse
 
 def log(request):
     logout(request)
@@ -361,6 +362,23 @@ class administrations_clients(ListView):
         if patronymic_user:
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
+
+
+def delete_user_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        user = User.objects.get(username=username)
+        user.delete()
+
+
+def levelUp_user_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        user = User.objects.get(username=username)
+        if not(check_group(user, "Employee")):
+            add_group(user, "Employee")
+
+
 
 def administration_employee(request):
     is_anyGroup(request.user, "Admin")
