@@ -4,89 +4,112 @@
     <meta charset="UTF-8">
     {% load static %}
     <link rel="stylesheet" href="{% static "css/index_style.css" %}">
-<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+    <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
+          rel="stylesheet">
 
     <title>{% block title %}О нас{% endblock %}</title>
 </head>
 <body>
-    <header>
-        <div class="nav">
-            <div class="nav_logo">
-                Course.Bank
-            </div>
-            <nav class="nav_link_bar">
-                {% block sidebar %}
-                    <a class="nav_link" href="{% url "index" %}"> Главная страница </a>
-                    {% if authorization %} {# Проверка на авторизацию пользователя #}
-                        {% if admin %}
-                            <a href="/administration/" class="nav_link">Администрирование</a>
-                        {% endif %}
-                        {% if employee %} {# Проверка на группу админ или служащий #}
-                            <a class="nav_link" href="/management/"> Управление клиентскими данными и счетами </a>
-                        {% endif %}
-                        {% if client and profile %}
-                            <a href="/private_office/" class="nav_link">Личный кабинет</a>
-                        {% endif %}
-                            <a class="nav_link" href="/logout/"> Выход </a>
-                        {% else %}
-                            <a class="nav_link" href="/login/"> Вход </a>
-                        {% endif %}
-                {% endblock %}
-            </nav>
+<header>
+    <div class="nav">
+        <div class="nav_logo">
+            Course.Bank
         </div>
-    </header>
+        <nav class="nav_link_bar">
+            {% block sidebar %}
+                <a class="nav_link" href="{% url "index" %}"> Главная страница </a>
+                {% if authorization %} {# Проверка на авторизацию пользователя #}
+                    {% if admin %}
+                        <a href="/administration/" class="nav_link">Администрирование</a>
+                    {% endif %}
+                    {% if employee %} {# Проверка на группу админ или служащий #}
+                        <a class="nav_link" href="/management/"> Управление клиентскими данными и счетами </a>
+                    {% endif %}
+                    {% if client and profile %}
+                        <a href="/private_office/" class="nav_link">Личный кабинет</a>
+                    {% endif %}
+                    <a class="nav_link" href="/logout/"> Выход </a>
+                {% else %}
+                    <a class="nav_link" href="/login/"> Вход </a>
+                {% endif %}
+            {% endblock %}
+        </nav>
+    </div>
+</header>
 
-    <section>
-        <div class="content_row">
-            <div class="content_container" style="width: 60%">
-                <div class="content_block">
-                    <div class="block_title">
-                        <div class="block_title_text">
-                            О нашем <br> проекте
-                        </div>
-                    </div>
-                    <div class="block_text">
-                        Ну тут мы пишем про наш проект, но в этом нет смысла, потому что эту страницу все равно никто не будет читать.
-                        <br><br>
-                        Проект делали студенты ВУЗа РУТ (МИИТ) Института Управления и Цифровых Технологий группы УПМ-211:
-                        <br>
-                        <b>backend</b> - Яненко Вадим
-                        <br>
-                        <b>frontend</b> - Балдин Михаил
-                        <br>
-                        <b>UML diagram</b> - Соловьев Артем, Буланов Евгений
+<section>
+    <div class="content_row">
+        <div class="content_container" style="width: 60%">
+            <div class="content_block">
+                <div class="block_title">
+                    <div class="block_title_text">
+                        О нашем <br> проекте
                     </div>
                 </div>
+                <div class="block_text">
+                    Добро пожаловать на наш сайт! Мы предоставляем удобную платформу для управления финансами и учетных
+                    записей. <br>Вот несколько причин, почему наш проект заслуживает внимания:<br>
+                    <ul>
+                        <li><b>Авторизация пользователя</b>
+                    С помощью нашей системы вы можете легко и безопасно авторизоваться на сайте, чтобы получить доступ к
+                    своему аккаунту и управлять своими финансами. <br><br></li>
+                        <li><b>Управление счетами</b>
+                    Создавайте и удаляйте счета для удобного учета ваших финансов. С нашей системой вы можете легко
+                    следить за своими расходами и доходами. <br><br></li>
+                        <li><b>Транзакции в разных валютах</b>
+                    Проводите транзакции как в рублях, так и в долларах. Наша система обеспечивает безопасность и
+                    точность финансовых операций, позволяя вам управлять денежными переводами в разных валютах. <br><br></li>
+                        <li><b>Управление пользователями и служащими</b>
+                    Администраторы могут управлять пользователями и служащими, назначать роли и разрешения, обеспечивая
+                    безопасность и эффективное управление работой. <br></li>
+                    </ul>
+                    Благодарим вас за использование нашей платформы для управления финансами! Надеемся, что наш сервис
+                    будет полезен вам в организации финансовых процессов.
+                    <br>
+                    <br>
+                    Проект выполнили студенты ВУЗа РУТ (МИИТ) Института Управления и Цифровых Технологий группы УПМ-211.
+                    <br>
+                    <br>
+                    <b>Яненко Вадим</b> работал над внутренней частью продукта, выполняющейся на стороне сервера и скрытой от пользователей
+
+                    <br>
+                    <b>Балдин Михаил</b> работал над публичной частью веб-приложения, с которой пользователь может взаимодействовать напрямую
+
+                    <br>
+                     <b>Буланов Евгений</b> и <b>Соловьёв Артём</b> работали над наглядным представлением совокупности элементов модели приложения
+                    <br>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer>
-        <div class="footer_container">
-            <div class="footer_block">
-                <div class="footer_block_element">
-                    <div class="nav_logo">
-                        Course.Bank
-                    </div>
-                </div>
-                <div class="footer_block_element">
-                    © 2023 - 2023 Course.Bank
-                </div>
-                <div class="footer_block_element">
-                    +89005553535
-                </div>
-                <div class="footer_block_element">
-                    course.bank@gmail.com
+<footer>
+    <div class="footer_container">
+        <div class="footer_block">
+            <div class="footer_block_element">
+                <div class="nav_logo">
+                    Course.Bank
                 </div>
             </div>
-            <div class="footer_block">
-
+            <div class="footer_block_element">
+                © 2023 - 2023 Course.Bank
+            </div>
+            <div class="footer_block_element">
+                +89005553535
+            </div>
+            <div class="footer_block_element">
+                course.bank@gmail.com
             </div>
         </div>
-    </footer>
+        <div class="footer_block">
+
+        </div>
+    </div>
+</footer>
 </body>
 </html>

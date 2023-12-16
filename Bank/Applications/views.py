@@ -75,33 +75,35 @@ class UserRegistrationView(FormView):
             if check_profile_existence(current_user):
                 messages.info(self.request, "Пользователь уже прошёл все этапы регистрации")
                 return self.render_to_response({})
+            self.request.session["saved_username"] = username
             return super().form_valid(form)
         messages.error(self.request, "Введены некорректные данные")
         return self.render_to_response({})
 
 
-def registerProfile(request):
-    user = request.user
-    if not (user.is_authenticated and check_group(user, "Employee") and check_session_existence(request)):
-        return redirect("/")
-    text = str()
-    response: bool = False
-    current_user = User.objects.get(username=request.session.get("saved_username"))
-    if request.method == "POST":
-        form_profile = ProfileForm(request.POST)
-        if form_profile.is_valid():
-            current_profile = CustomUser.objects.create(user=current_user)  # Создаём запись в БД о пользователе
-            save_profile(current_profile, form_profile)
-            return redirect("/choice_wallet")
-        else:
-            response: bool = True
+class ProfileRegistrationView(FormView):
+    template_name = "reg_form_profile.html"
+    form_class = ProfileForm
+    success_url = reverse_lazy("choice_wallet")
 
-    if (request.session.get("saved_username") and not (check_profile_existence(current_user))):
-        if not (text):
-            text = request.session.get("saved_username")
-        return render(request, "reg_form_profile.html", {"text": text, "response": response})
-    else:
-        return redirect("/")
+    def form_valid(self, form):
+        current_user = User.objects.get(username=self.request.session.get("saved_username"))
+        if not(check_profile_existence(current_user)):
+            current_profile = CustomUser.objects.create(user=current_user)
+            save_profile(current_profile, form)
+            return super().form_valid(form)
+        else:
+            messages.error(self.request, "У данного пользователя уже есть профиль")
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Введены некорректные данные")
+        return self.render_to_response({})
+
+    def dispatch(self, request, *args, **kwargs):
+        user = self.request.user
+        if not (user.is_authenticated and check_group(user, "Employee") and (check_session_existence(request))):
+            return redirect("/")
+        return super().dispatch(request, *args, **kwargs)
 
 
 def registerAnyWallet(request, any_form, wallet, save, html: str):

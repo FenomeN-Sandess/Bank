@@ -4,27 +4,28 @@
     <meta charset="UTF-8">
     {% load static %}
     <link rel="stylesheet" href="{% static "css/index_style.css" %}">
-<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+    <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
+          rel="stylesheet">
 
     <title>{% block title %}Регистрация пользователя{% endblock %}</title>
 </head>
 <body>
-    <section>
-        <div class="content_row" style="font-size: 1.2rem">
-            <div class="content_container">
-                <div class="content_block">
-                    <div class="block_title" style="height: auto">
-                        <div class="block_title_text">
-                            Регистрация пользователя
-                        </div>
+<section>
+    <div class="content_row" style="font-size: 1.2rem">
+        <div class="content_container">
+            <div class="content_block">
+                <div class="block_title" style="height: auto">
+                    <div class="block_title_text">
+                        Регистрация пользователя
                     </div>
-                    <div class="block_text">
+                </div>
+                <div class="block_text">
                     <form method="post" action="{% url 'reg_form' %}">
-                    {% csrf_token %}
+                        {% csrf_token %}
                         <div class="reg_block">
                             <label for="id_username">Логин:</label>
                             <input type="text" name="username" maxlength="150" required id="id_username">
@@ -39,20 +40,20 @@
                         </div>
                         <button type="submit">Далее</button>
                     </form>
-                        <a class="a_underline" href="/management">Вернуться назад</a>
+                    <div class="message_error">
+                        {% if messages %}
+                            {% for message in messages %}
+                                {{ message.message }}
+                            {% endfor %}
+                        {% endif %}
                     </div>
+                    <a class="a_underline" href="/management">Вернуться назад</a>
                 </div>
             </div>
         </div>
-    </section>
-<div class="{% url "index" %}"><a href="/management">Вернуться назад</a></div>
+    </div>
+</section>
 
-<div class="message_error">
-    {% if messages %}
-        {% for message in messages %}
-            {{ message.message }}
-        {% endfor %}
-    {% endif %}
-</div>
+
 </body>
 </html>
