@@ -21,5 +21,7 @@ urlpatterns = [
     path("closing_wallet/", views.closeWallets, name="closing_wallet"),
     path("administration/clients", administrations_clients.as_view(), name="administration_clients"),
     path("administration/", views.choice_search, name="choice_search"),
-    path("administration/employee", views.administration_employee, name="administration_employee")
+    path("administration/employee", views.administration_employee, name="administration_employee"),
+    path("delete_user/", views.delete_user_view, name="delete_user"),
+    path("levelUp_user/", views.levelUp_user_view, name="levelUp_user")
 ]
