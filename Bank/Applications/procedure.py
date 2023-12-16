@@ -20,6 +20,12 @@ def add_group(user, str_group):
     user.save()
 
 
+def delete_group(user, str_group):
+    group = Group.objects.get(name=str_group)
+    user.groups.remove(group)
+    user.save()
+
+
 def check_profile_existence(current_user) -> bool:  # На вход принимается модель пользователя
     try:
         CustomUser.objects.get(user=current_user)
