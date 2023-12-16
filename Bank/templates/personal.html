@@ -4,13 +4,51 @@
     <meta charset="UTF-8">
     {% load static %}
     <link rel="stylesheet" href="{% static "css/index_style.css" %}">
-<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+    <link rel="stylesheet" href="{% static "css/personal_style.css" %}">
+    <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
 
     <title>{% block title %}Личный кабинет{% endblock %}</title>
+
+    <script>
+        function openclose_passport_data() {
+                let data = document.getElementById('passport_data');
+                let button = document.getElementById('passport_button')
+                if (data.style.display === 'block') {
+                    button.innerText = 'Показать паспортные данные'
+                    data.style.display = 'none'
+                }
+                else {
+                    button.innerText = 'Скрыть паспортные данные'
+                    data.style.display = 'block'
+                }
+            }
+
+        function openclose_wallet_data(wallet_name) {
+            let name = wallet_name;
+            let wallet = document.getElementById('wallet_info');
+            let credit = document.getElementById('credit_wallet_info');
+            let savings = document.getElementById('saving_wallet_info');
+            if (wallet_name === 'wallet') {
+                wallet.style.display = 'block';
+                credit.style.display = 'none'
+                savings.style.display = 'none'
+            }
+            if (wallet_name === 'credit') {
+                wallet.style.display = 'none';
+                credit.style.display = 'block'
+                savings.style.display = 'none'
+            }
+            if (wallet_name === 'saving') {
+                wallet.style.display = 'none';
+                credit.style.display = 'none'
+                savings.style.display = 'block'
+            }
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -39,53 +77,85 @@
             </nav>
         </div>
     </header>
+
     <section>
-    <div class="personal_info">Персональная информация</div>
-    <div class="name">ФИО пользователя: {{ surname }} {{ name }} {{ patronymic }}</div>
-    <div class="phone_number">Номер телефона: {{ phone_number }}</div>
-    <div class="date_of_birth">Дата рождения: {{ date_of_birth }}</div>
-    <div class="itn">Номер ИНН: {{ itn }}</div>
-    <div class="passport_data">
-        <button>Показать серию и номер паспорта</button>
-        Серия и номер паспорта: {{ passport_series }} {{ passport_number }}
-    </div>
-    <div class="message_wallets">Блок управления личными счетами</div>
-    <button>Сберегательный счёт</button>
-    <button>Накопительный счёт</button>
-    <button>Кредитный счёт</button>
-    {% if isThere_wallet %}
-        Номер счёта: {{ number_wallet }} <br>
-        Остаток на сберегательном счету: {{ amount_wallet }} {{ currency_wallet }} <br>
-        <div class="transactions">
-            <a href="{% url "transactions" %}">Перевод денежных средств</a> <br>
+        <div class="content_row">
+            <div class="content_container" style="width: 30%">
+                <div class="content_block">
+                    <div class="block_title">
+                        <div class="block_title_text">
+                            Персональная информация
+                        </div>
+                    </div>
+                    <div class="personal_text">ФИО пользователя: {{ surname }} {{ name }} {{ patronymic }}</div>
+                    <div class="personal_text">Номер телефона: {{ phone_number }}</div>
+                    <div class="personal_text">Дата рождения: {{ date_of_birth }}</div>
+                    <div class="personal_text">Номер ИНН: {{ itn }}</div>
+                    <div class="personal_text">
+                        <button id="passport_button" onclick="openclose_passport_data()">Показать паспортные данные</button>
+                        <div class="passport_data" id="passport_data">
+                            Серия и номер паспорта: {{ passport_series }} {{ passport_number }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content_container" style="width: 60%;">
+                <div class="content_block">
+                    <div class="block_title">
+                        <div class="block_title_text">
+                            Блок управления личными счетами
+                        </div>
+                    </div>
+
+                    <div class="buttons_container">
+                        <button style="width: 30%;" onclick="openclose_wallet_data('wallet')">Сберегательный счёт</button>
+                        <button style="width: 30%;" onclick="openclose_wallet_data('saving')">Накопительный счёт</button>
+                        <button style="width: 30%;" onclick="openclose_wallet_data('credit')">Кредитный счёт</button>
+                    </div>
+
+                    <div class="wallet_container" id="wallet_info">
+                        {% if isThere_wallet %}
+                            <div class="personal_text">Номер счёта: {{ number_wallet }}</div>
+                            <div class="personal_text">Остаток на сберегательном счету: {{ amount_wallet }} {{ currency_wallet }}</div>
+                        <div class="transactions">
+                            <a href="{% url "transactions" %}"  class="money_transfer">Перевод денежных средств</a> <br>
+                        </div>
+                    {% else %}
+                        <div class="notThere_wallet_message">У вас ещё нет сберегательного счёта. Для создания обратитесь к служащему банка.</div>
+                    {% endif %}
+                    </div>
+
+                    <div class="wallet_container" id="credit_wallet_info">
+                        {% if isThere_credit %}
+                            <div class="personal_text">Номер кредитного счёта: {{ number_credit }}</div>
+                            <div class="personal_text">Остаток на кредитном счету: {{ amount_credit }}  {{ currency_credit }} из {{ limit }}  {{ currency_credit }}</div>
+                            <div class="personal_text">Процент по кредиту: {{ percent }}</div>
+                        <div class="transactions">
+                            <a href="{% url "transactions" %}" class="money_transfer">Перевод денежных средств</a>
+                        </div>
+                    {% else %}
+                        <div class="notThere_credit_message">У вас нет кредитного счёта. Для создания обратитесь к служащему банка. </div> <br>
+                    {% endif %}
+                    </div>
+
+                    <div class="wallet_container" id="saving_wallet_info">
+                        {% if isThere_savings %}
+                            <div class="personal_text">Номер накопительного счёта: {{ number_savings }}</div>
+                            <div class="personal_text">Остаток на накопительном счету: {{ amount_savings }} {{ currency_savings }}</div>
+                            <div class="personal_text">Ставка: {{ rate }}</div>
+                        <div class="transactions">
+                            <a href="{% url "transactions" %}"  class="money_transfer">Перевод денежных средств</a>
+                        </div>
+                    {% else %}
+                        <div class="notThere_savings_message">У вас ещё нет накопительного счёта. Для создания обратитесь к служащему банка.</div>
+                    {% endif %}
+                    </div>
+
+                </div>
+            </div>
         </div>
-    {% else %}
-        <div class="notThere_wallet_message">У вас ещё нет сберегательного счёта. Обратитесь к служащему банка</div>
-    {% endif %}
-    {% if isThere_credit %}
-        <br>
-        Номер кредитной карты: {{ number_credit }} <br>
-        Остаток на кредитном счету: {{ amount_credit }}  {{ currency_credit }} из {{ limit }}  {{ currency_credit }} <br>
-        Процент по кредиту: {{ percent }}
-        <div class="transactions">
-            <a href="{% url "transactions" %}">Перевод денежных средств</a>
-        </div> <br>
-    {% else %}
-        <br>
-        <div class="notThere_credit_message">У вас нет кредитного счёта. Обратитесь к служащему банка. </div> <br>
-    {% endif %}
-    {% if isThere_savings %}
-        Номер накопительного счёта: {{ number_savings }} <br>
-        Остаток на накопительном счету: {{ amount_savings }} {{ currency_savings }} <br>
-        Ставка: {{ rate }}
-        <div class="transactions">
-            <a href="{% url "transactions" %}">Перевод денежных средств</a> <br>
-        </div>
-    {% else %}
-        <div class="notThere_savings_message">У вас ещё нет накопительного счёта. Обратитесь к служащему банка</div>
-    {% endif %}
-        <br>
     </section>
+
     <footer>
         <div class="footer_container">
             <div class="footer_block">

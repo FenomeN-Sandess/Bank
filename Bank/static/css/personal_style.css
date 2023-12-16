@@ -1,0 +1,43 @@
+.wallet_container {
+    display: none;
+}
+
+.buttons_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.personal_text {
+    margin-bottom: 1rem;
+}
+
+.passport_data {
+    display: none;
+}
+
+.money_transfer {
+    display: block;
+    width: max-content;
+    position: relative;
+    padding: 0.01em 0;
+}
+
+.money_transfer:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0.11em;
+    background-color: #A594F9FF;
+    opacity: 0;
+    transition: opacity .2s ease-out,
+                transform .2s ease-out;
+}
+
+.money_transfer:hover::after,
+.money_transfer:focus::after {
+    opacity: 1;
+    transform: translate3d(0, 0.2em, 0);
+}

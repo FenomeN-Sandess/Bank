@@ -31,6 +31,26 @@ a {
     transition: background-color .2s ease-out;
 }
 
+button {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #A594F9;
+    border: none;
+    margin-bottom: 1rem;
+    border-radius: 1.5rem;
+    padding: .5rem 1rem;
+    transition: background-color .2s ease-out, scale .2s ease-out;
+}
+
+button:hover {
+    background-color: #F6A823;
+}
+
+button:active {
+    scale: .98;
+}
+
 .button_link:hover {
     background-color: #FAA916FF;
 }
@@ -123,6 +143,7 @@ section {
 
 .content_row {
     display: flex;
+
     justify-content: center;
     width: 85%;
     flex-direction: row;
