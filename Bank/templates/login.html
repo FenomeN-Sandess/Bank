@@ -51,9 +51,17 @@
              {% elif request_error %}
                  <div class="message"> {{ message_error }}</div>
              {% endif %}
-
          </div>
     </div>
+</div>
+<div class="message_error">
+    {% if messages %}
+        {% for message in messages %}
+        	{{ message.message }}
+            {{ message.level }}
+            {{ message.tags }}
+        {% endfor %}
+    {% endif %}
 </div>
 </body>
 
