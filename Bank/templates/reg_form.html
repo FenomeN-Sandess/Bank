@@ -45,5 +45,14 @@
             </div>
         </div>
     </section>
+<div class="{% url "index" %}"><a href="/management">Вернуться назад</a></div>
+
+<div class="message_error">
+    {% if messages %}
+        {% for message in messages %}
+            {{ message.message }}
+        {% endfor %}
+    {% endif %}
+</div>
 </body>
 </html>

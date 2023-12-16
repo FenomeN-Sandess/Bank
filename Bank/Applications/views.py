@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from .utils import *
 
+
 def log(request):
     logout(request)
     return render(request, "index.html")
@@ -26,7 +27,6 @@ class AboutView(UserInfo, View):
 
 class IndexView(UserInfo, View):
     template_name = "index.html"
-
 
     def get(self, request):
         context = self.get_user_info(request)
@@ -58,48 +58,26 @@ class LoginView(FormView):
 class UserRegistrationView(FormView):
     template_name = "reg_form.html"
     form_class = UserRegistrationForm
-    success_url = reverse_lazy("reg_profile")
+    success_url = reverse_lazy("reg_form_profile")
 
     def form_valid(self, form):
         form.save()
-        current_user = User.objects.get(username = form.cleaned_data["username"])
+        current_user = User.objects.get(username=form.cleaned_data["username"])
         add_group(current_user, "Client")
         self.request.session["saved_username"] = form.cleaned_data["username"]
+        print("Это произошло")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        username: str=form.data["username"]
+        username: str = form.data["username"]
         if check_user_existence(username):
             current_user = User.objects.get(username=username)
             if check_profile_existence(current_user):
                 messages.info(self.request, "Пользователь уже прошёл все этапы регистрации")
                 return self.render_to_response({})
-            return super().form_invalid(form)
+            return super().form_valid(form)
         messages.error(self.request, "Введены некорректные данные")
         return self.render_to_response({})
-
-
-
-def register(request):
-    user = request.user
-    if not (user.is_authenticated and check_group(user, "Employee")):
-        return redirect("/")
-    if user.is_authenticated:
-        message = str()
-        if request.method == 'POST':
-            form = UserRegistrationForm(request.POST)  # Сохраняется форма с вписанными пользователем данными
-            str_current_user = form.data["username"]  # Сохраняем в сессию имя пользователя, которого регистрируем
-            request.session["saved_username"] = str_current_user  # Сохраняем имя пользователя в сессии служащего
-            if form.is_valid():
-                form.save()  # Объявляется метод сохранения данных из формы и объявляется группа пользователя
-                add_group(User.objects.get(username=form.cleaned_data["username"]),
-                          "Client")  # Добавляем пользователя в группу и сохраняем
-                return redirect("/reg_profile")
-            elif check_user_existence(str_current_user):
-                if check_profile_existence(User.objects.get(username=str_current_user)):
-                    return HttpResponse("Пользователь уже прошёл все этапы регистрации")
-                return redirect("/reg_profile")
-        return render(request, 'reg_form.html', {"message": message})
 
 
 def registerProfile(request):
