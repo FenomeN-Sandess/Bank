@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
         <link rel="stylesheet" href="{% static "css/index_style.css" %}">
-    <link rel="stylesheet" href="{% static "css/reg_form_style.css" %}">
+    <link rel="stylesheet" href="{% static "css/login_form_style.css" %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap"
@@ -19,50 +19,48 @@
 </head>
 
 <body>
-<div class="reg_container">
-    <div class="reg_form_container">
+    <div class="reg_container">
+        <div class="reg_form_container">
 
-        <img class="reg_form_img" src="{% static "img/reg_form_img_pig.png" %}"
-             alt="=Oops...">
+            <img class="reg_form_img" src="{% static "img/reg_form_img_pig.png" %}"
+                 alt="=Oops...">
 
-         <div class="reg_form_container_content">
-             <form class="reg_form" action="" method="post">
-                 <div class="reg_form_header">
-                     Course.Bank
-                </div>
-                 {% csrf_token %}
-                 <div class="reg_form_input_block">
-                    <label for="username_label"> логин </label>
-                    <input id="username_label" type="text"
-                           name="username" class="reg_form_input">
-                </div>
-                <div class="reg_form_input_block">
-                    <label for="password_label"> пароль </label>
-                    <input id="password_label" type="password"
-                           name="password" class="reg_form_input">
-                </div>
-                <div class="reg_form_input_block">
-                    <button type="submit" class="reg_form_submit">Войти</button>
-                </div>
-             </form>
+            <div class="reg_form_container_content">
+                 <form class="reg_form" action="" method="post">
+                     <div class="reg_form_header">
+                         Course.Bank
+                    </div>
+                     {% csrf_token %}
+                     <div class="reg_form_input_block">
+                        <label for="username_label"> логин </label>
+                        <input id="username_label" type="text"
+                               name="username" class="reg_form_input">
+                    </div>
+                    <div class="reg_form_input_block">
+                        <label for="password_label"> пароль </label>
+                        <input id="password_label" type="password"
+                               name="password" class="reg_form_input">
+                    </div>
+                    <div class="reg_form_input_block">
+                        <button type="submit" class="reg_form_submit">Войти</button>
+                        <div class="message_error" style="">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {{ message.message }}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                 </form>
 
-             {% if request_off %}
-                 <div class="message"> {{ message_off }}</div>
-             {% elif request_error %}
-                 <div class="message"> {{ message_error }}</div>
-             {% endif %}
-         </div>
+                 {% if request_off %}
+                     <div class="message"> {{ message_off }}</div>
+                 {% elif request_error %}
+                     <div class="message"> {{ message_error }}</div>
+                 {% endif %}
+            </div>
+        </div>
     </div>
-</div>
-<div class="message_error">
-    {% if messages %}
-        {% for message in messages %}
-        	{{ message.message }}
-            {{ message.level }}
-            {{ message.tags }}
-        {% endfor %}
-    {% endif %}
-</div>
 </body>
 
 </html>

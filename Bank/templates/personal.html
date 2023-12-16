@@ -131,7 +131,7 @@
                             <div class="personal_text">Остаток на кредитном счету: {{ amount_credit }}  {{ currency_credit }} из {{ limit }}  {{ currency_credit }}</div>
                             <div class="personal_text">Процент по кредиту: {{ percent }}</div>
                         <div class="transactions">
-                            <a href="{% url "transactions" %}" class="money_transfer">Перевод денежных средств</a>
+                            <a href="{% url "transactions" %}" class="a_underline">Перевод денежных средств</a>
                         </div>
                     {% else %}
                         <div class="notThere_credit_message">У вас нет кредитного счёта. Для создания обратитесь к служащему банка. </div> <br>
@@ -144,7 +144,7 @@
                             <div class="personal_text">Остаток на накопительном счету: {{ amount_savings }} {{ currency_savings }}</div>
                             <div class="personal_text">Ставка: {{ rate }}</div>
                         <div class="transactions">
-                            <a href="{% url "transactions" %}"  class="money_transfer">Перевод денежных средств</a>
+                            <a href="{% url "transactions" %}"  class="a_underline">Перевод денежных средств</a>
                         </div>
                     {% else %}
                         <div class="notThere_savings_message">У вас ещё нет накопительного счёта. Для создания обратитесь к служащему банка.</div>

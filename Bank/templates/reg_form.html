@@ -2,25 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/index_style.css" %}">
+<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
-    <title>Registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
+
+    <title>{% block title %}Регистрация пользователя{% endblock %}</title>
 </head>
 <body>
-    <div class="{% url "index" %}"><a href="/management">Вернуться назад</a></div>
-    <h1>Регистрация пользователя</h1>
-    {# Пока что в случае регистрации идёт перенаправление на url какой-то (в нашем случае - главная стр), но потом нужно будет разобраться, как там скрипт вызвать #}
-
-    <form method="post" action="{% url 'reg_form' %}">
-    {% csrf_token %}
-        <p><label for="id_username">Логин:</label>
-    <input type="text" name="username" maxlength="150" required id="id_username"></p>
-        <p><label for="id_password1">Пароль:</label>
-    <input type="password" name="password1" required id="id_password1"></p>
-        <p><label for="id_password2">Подтверждение пароля:</label>
-    <input type="password" name="password2" required id="id_password2"></p>
-    <button type="submit">Далее</button>
-    </form>
-    <p>{{ text }}</p>
-    <p>{{ message }}</p>
+    <section>
+        <div class="content_row" style="font-size: 1.2rem">
+            <div class="content_container">
+                <div class="content_block">
+                    <div class="block_title" style="height: auto">
+                        <div class="block_title_text">
+                            Регистрация пользователя
+                        </div>
+                    </div>
+                    <div class="block_text">
+                    <form method="post" action="{% url 'reg_form' %}">
+                    {% csrf_token %}
+                        <div class="reg_block">
+                            <label for="id_username">Логин:</label>
+                            <input type="text" name="username" maxlength="150" required id="id_username">
+                        </div>
+                        <div class="reg_block">
+                            <label for="id_password1">Пароль:</label>
+                            <input type="password" name="password1" required id="id_password1">
+                        </div>
+                        <div class="reg_block">
+                            <label for="id_password2">Подтверждение пароля:</label>
+                            <input type="password" name="password2" required id="id_password2">
+                        </div>
+                        <button type="submit">Далее</button>
+                    </form>
+                        <a class="a_underline" href="/management">Вернуться назад</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>

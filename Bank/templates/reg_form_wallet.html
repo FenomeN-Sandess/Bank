@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Создание сберегательного счёта</title>
+            <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/index_style.css" %}">
+<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
+
+    <title>{% block title %}Создание сберегательного счета{% endblock %}</title>
 </head>
 <body>
-
-    <form method="post" action="{% url 'reg_form_wallet' %}">
-        {% csrf_token %}
-        <label for="id_username">Введите логин пользователя</label>
-        <input id="id_username" name="username" type="text">
-        <hr>
-        <div class="-"><label for="id_currency">Выберете валюту для сберегательного счёта: </label>
-            <select name="currency" id="id_currency">
-                <option value="RU">Рубль</option>
-                <option value="USA">Доллар</option>
-            </select>
+<section>
+        <div class="content_row" style="font-size: 1.2rem">
+            <div class="content_container">
+                <div class="content_block">
+                    <div class="block_title" style="height: auto">
+                        <div class="block_title_text">
+                            Выберите необходимое действие
+                        </div>
+                    </div>
+                    <div class="block_text">
+                        <form method="post" action="{% url 'reg_form_wallet' %}">
+                            {% csrf_token %}
+                            <label for="id_username">Введите логин пользователя</label>
+                            <input id="id_username" name="username" type="text">
+                            <hr>
+                            <div class="-"><label for="id_currency">Выберете валюту для сберегательного счёта: </label>
+                                <select name="currency" id="id_currency">
+                                    <option value="RU">Рубль</option>
+                                    <option value="USA">Доллар</option>
+                                </select>
+                            </div>
+                            <hr>
+                        <button type="submit">Создать сберегательный счёт пользователю</button>
+                        </form>
+                        <hr>
+                        {% if request %}
+                            <div class="request_message">
+                                {{ request_message }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <a class="a_underline" href="/management">Вернуться назад</a>
+                    <a class="a_underline" href="{% url "index" %}">Вернуться на главную страницу</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <hr>
-    <button type="submit">Создать сберегательный счёт пользователю</button>
-    </form>
-    <hr>
-    {% if request %}
-        <div class="request_message">
-            {{ request_message }}
-        </div>
-    {% endif %}
-    <a href="/management">Вернуться назад</a> <br>
-    <a href="{% url "index" %}">Вернуться на главную страницу</a>
+    </section>
 </body>
 </html>
