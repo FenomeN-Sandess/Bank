@@ -50,39 +50,34 @@ class LoginView(FormView):
             return self.form_invalid(form)
 
     def form_invalid(self, form):
+        # Эти сообщения отправляются
         messages.error(self.request, "Неверный логин или пароль")
         return super().form_invalid(form)
 
 
+class UserRegistrationView(FormView):
+    template_name = "reg_form.html"
+    form_class = UserRegistrationForm
+    success_url = reverse_lazy("reg_profile")
 
-# def login_view(request):
-#     request_off: bool = False
-#     message_off: str = "Учетная запись отключена"
-#     request_error: bool = False
-#     message_error: str = "Неверный логин или пароль"
-#     if request.method == "POST":
-#         form = LoginForm(request.POST)
-#         if form.is_valid():
-#             form_data = form.cleaned_data
-#             user = authenticate(username=form_data['username'], password=form_data['password'])
-#             if user is not None:
-#                 if user.is_active:
-#                     login(request, user)
-#                     return redirect("/")
-#                 else:
-#                     request_off = True
-#             else:
-#                 request_error = True
-#     content = {
-#         "request_off": request_off,
-#         "request_error": request_error,
-#     }
-#     if request_off:
-#         content.update({"message_off": message_off})
-#     if request_error:
-#         content.update({"message_error": message_error})
-#
-#     return render(request, "login.html", content)
+    def form_valid(self, form):
+        form.save()
+        current_user = User.objects.get(username = form.cleaned_data["username"])
+        add_group(current_user, "Client")
+        self.request.session["saved_username"] = form.cleaned_data["username"]
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        username: str=form.data["username"]
+        if check_user_existence(username):
+            current_user = User.objects.get(username=username)
+            if check_profile_existence(current_user):
+                messages.info(self.request, "Пользователь уже прошёл все этапы регистрации")
+                return self.render_to_response({})
+            return super().form_invalid(form)
+        messages.error(self.request, "Введены некорректные данные")
+        return self.render_to_response({})
+
 
 
 def register(request):
