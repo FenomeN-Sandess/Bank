@@ -21,7 +21,7 @@
             </div>
             <nav class="nav_link_bar">
                 {% block sidebar %}
-                    <a class="nav_link" href="/">Вернуться назад</a>
+                    <a class="nav_link" href="{% url "index" %}">Вернуться назад</a>
                     {% if admin %}
                         <a href="/administation/" class="nav_link">Администрирование</a>
                     {% endif %}

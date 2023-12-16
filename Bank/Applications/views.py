@@ -1,94 +1,88 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
 from unicodedata import decimal
 from .forms import *
 from .models import *
 from .procedure import *
 from decimal import Decimal
-from django.views.generic import ListView, View, TemplateView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, View, TemplateView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.db.models import Q
 from django.http import JsonResponse
+from .utils import *
 
 def log(request):
     logout(request)
     return render(request, "index.html")
 
 
-def about(request):
-    user = request.user  # Текущий пользователь
-    client = False
-    employee = False
-    admin = False
-    profile = False
-    authorization = user.is_authenticated
-    if authorization:
-        client: bool = check_group(user, "Client")
-        employee: bool = check_group(user, "Employee")
-        admin: bool = check_group(user, "Admin")
-        profile = check_profile_existence(user)  # Делаем проверочку зарегистрован ли профиль в системе
-    contex = {
-        "client": client,
-        "employee": employee,
-        "admin": admin,
-        "profile": profile,
-        "authorization": authorization,
-        "login": user.username,
-        "groups": user.groups.all()
-    }
-    return render(request, "about.html", contex)
+class AboutView(UserInfo, View):
+    template_name = "about.html"
+
+    def get(self, request):
+        context = self.get_user_info(request)
+        return render(request, self.template_name, context)
 
 
-def login_view(request):
-    request_off: bool = False
-    message_off: str = "Учетная запись отключена"
-    request_error: bool = False
-    message_error: str = "Неверный логин или пароль"
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            form_data = form.cleaned_data
-            user = authenticate(username=form_data['username'], password=form_data['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect("/")
-                else:
-                    request_off = True
-            else:
-                request_error = True
-    content = {
-        "request_off": request_off,
-        "request_error": request_error,
-    }
-    if request_off:
-        content.update({"message_off": message_off})
-    if request_error:
-        content.update({"message_error": message_error})
-
-    return render(request, "login.html", content)
+class IndexView(UserInfo, View):
+    template_name = "index.html"
 
 
-def index(request):
-    user = request.user  # Текущий пользователь
-    client = False
-    employee = False
-    admin = False
-    profile = False
-    authorization = user.is_authenticated
-    if authorization:
-        client: bool = check_group(user, "Client")
-        employee: bool = check_group(user, "Employee")
-        admin: bool = check_group(user, "Admin")
-        profile = check_profile_existence(user)  # Делаем проверочку зарегистрован ли профиль в системе
-    contex = {
-        "client": client,
-        "employee": employee,
-        "admin": admin,
-        "profile": profile,
-        "authorization": authorization,
-        "login": user.username,
-        "groups": user.groups.all()
-    }
-    return render(request, "index.html", contex)
+    def get(self, request):
+        context = self.get_user_info(request)
+        return render(request, self.template_name, context)
+
+
+class LoginView(FormView):
+    template_name = "login.html"
+    form_class = LoginForm
+    success_url = reverse_lazy("index")
+
+    def form_valid(self, form):
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
+        user = authenticate(username=username, password=password)
+
+        if user is not None and user.is_active:
+            login(self.request, user)
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Неверный логин или пароль")
+        return super().form_invalid(form)
+
+
+
+# def login_view(request):
+#     request_off: bool = False
+#     message_off: str = "Учетная запись отключена"
+#     request_error: bool = False
+#     message_error: str = "Неверный логин или пароль"
+#     if request.method == "POST":
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             form_data = form.cleaned_data
+#             user = authenticate(username=form_data['username'], password=form_data['password'])
+#             if user is not None:
+#                 if user.is_active:
+#                     login(request, user)
+#                     return redirect("/")
+#                 else:
+#                     request_off = True
+#             else:
+#                 request_error = True
+#     content = {
+#         "request_off": request_off,
+#         "request_error": request_error,
+#     }
+#     if request_off:
+#         content.update({"message_off": message_off})
+#     if request_error:
+#         content.update({"message_error": message_error})
+#
+#     return render(request, "login.html", content)
 
 
 def register(request):
@@ -199,10 +193,11 @@ def closeWallets(request):
                     wallet.delete()
                     contex.update({"request": True, "request_message": "Кошелек успешно удалён"})
             elif wallet_type == CreditWallet:
-                if not(check_debtExistence(wallet)):
+                if not (check_debtExistence(wallet)):
                     wallet.delete()
                     return redirect("/management")
-                contex.update({"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
+                contex.update(
+                    {"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
     return render(request, "closing_wallet.html", contex)
 
 
@@ -236,7 +231,7 @@ def transactions(request):
     contex_data = dict()
 
     profile = user.customuser
-    if request.method=="POST":
+    if request.method == "POST":
         comission = 0.03
         form_transfer = TransactionsForm(request.POST)
         choice_dict = dict(form_transfer.choice)
@@ -252,7 +247,8 @@ def transactions(request):
                 type_wallet_to = choice_dict.get(form_transfer.cleaned_data["account_to"])
                 wallet_to = type_wallet_to.objects.get(owner=profile)
             if wallet_from == wallet_to:
-                contex_request.update({"request": True, "request_message": "Выберите кошелек, на который планируете произвести оплату"})
+                contex_request.update(
+                    {"request": True, "request_message": "Выберите кошелек, на который планируете произвести оплату"})
 
             else:
                 currency_to = wallet_to.currency
@@ -262,9 +258,9 @@ def transactions(request):
                     if currency_to == currency_from:
                         wallet_to.amount += wallet_add
                     elif currency_from == "RU":
-                        wallet_to.amount += (wallet_add/90)*Decimal(f"{1 - comission}")
+                        wallet_to.amount += (wallet_add / 90) * Decimal(f"{1 - comission}")
                     else:
-                        wallet_to.amount += (wallet_add*90)*Decimal(f"{1 - comission}")
+                        wallet_to.amount += (wallet_add * 90) * Decimal(f"{1 - comission}")
                     wallet_from.amount -= wallet_add
                     wallet_from.save()
                     wallet_to.save()
@@ -302,7 +298,7 @@ def personalArea(request):
         "date_of_birth": profile.date_of_birth,
         "passport_series": profile.passport_series,
         "passport_number": profile.passport_number
-        }
+    }
 
     isThere_wallet = check_wallets_existence(Wallet, user)
     isThere_credit = check_wallets_existence(CreditWallet, user)
@@ -352,7 +348,8 @@ class administrations_clients(ListView):
         name_user = self.request.GET.get("name")
         surname_user = self.request.GET.get("surname")
         patronymic_user = self.request.GET.get("patronymic")
-        filter_objects = CustomUser.objects.filter(user__groups__name__contains="Client").exclude(user__groups__name__contains="Employee")
+        filter_objects = CustomUser.objects.filter(user__groups__name__contains="Client").exclude(
+            user__groups__name__contains="Employee")
         if login_user:
             filter_objects = filter_objects.filter(user__username__contains=login_user)
         if name_user:
@@ -374,7 +371,8 @@ class administrations_employee(ListView):
         name_user = self.request.GET.get("name")
         surname_user = self.request.GET.get("surname")
         patronymic_user = self.request.GET.get("patronymic")
-        filter_objects = CustomUser.objects.filter(user__groups__name__contains="Client").filter(user__groups__name__contains="Employee")
+        filter_objects = CustomUser.objects.filter(user__groups__name__contains="Client").filter(
+            user__groups__name__contains="Employee")
         if login_user:
             filter_objects = filter_objects.filter(user__username__contains=login_user)
         if name_user:
@@ -384,7 +382,6 @@ class administrations_employee(ListView):
         if patronymic_user:
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
-
 
 
 def delete_user_view(request):
@@ -398,7 +395,7 @@ def levelUp_user_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         user = User.objects.get(username=username)
-        if not(check_group(user, "Employee")):
+        if not (check_group(user, "Employee")):
             add_group(user, "Employee")
 
 
