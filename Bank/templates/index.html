@@ -28,16 +28,16 @@
             <nav class="nav_link_bar">
                 {% block sidebar %}
                     <a class="nav_link" href="/about/"> О нас </a>
-                    {% if admin %}
-                        <a href="/administration/" class="nav_link">Администрирование</a>
-                    {% endif %}
-                    {% if client and profile %}
-                        <a href="/private_office/" class="nav_link">Личный кабинет</a>
-                     {% endif %}
                     {% if authorization %} {# Проверка на авторизацию пользователя #}
+                        {% if admin %}
+                        <a href="/administration/" class="nav_link">Администрирование</a>
+                        {% endif %}
                         {% if employee %} {# Проверка на группу админ или служащий #}
                             <a class="nav_link" href="/management/"> Управление клиентскими данными и счетами </a>
                         {% endif %}
+                        {% if client and profile %}
+                        <a href="/private_office/" class="nav_link">Личный кабинет</a>
+                     {% endif %}
                         <a class="nav_link" href="/logout/"> Выход </a>
                     {% else %}
                         <a class="nav_link" href="/login/"> Вход </a>

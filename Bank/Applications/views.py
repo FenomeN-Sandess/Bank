@@ -319,5 +319,15 @@ def personalArea(request):
     return render(request, "personal.html", contex_data | contex_existence | contex_wallets)
 
 
-def administration(request):
-    return render(request, "administration.html")
+def administration_clients(request):
+    is_anyGroup(request.user, "Admin")
+    return render(request, "administration_clients.html")
+
+
+def administration_employee(request):
+    is_anyGroup(request.user, "Admin")
+    return render(request, "administration_employee.html")
+
+def choice_search(request):
+    is_anyGroup(request.user, "Admin")
+    return render(request, "choice_search.html")
