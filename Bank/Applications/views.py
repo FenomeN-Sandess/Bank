@@ -4,6 +4,8 @@ from .forms import *
 from .models import *
 from .procedure import *
 from decimal import Decimal
+from django.views.generic import ListView, View, TemplateView, DetailView, CreateView, UpdateView, DeleteView
+from django.db.models import Q
 
 def log(request):
     logout(request)
@@ -11,7 +13,27 @@ def log(request):
 
 
 def about(request):
-    return render(request, "about.html")
+    user = request.user  # Текущий пользователь
+    client = False
+    employee = False
+    admin = False
+    profile = False
+    authorization = user.is_authenticated
+    if authorization:
+        client: bool = check_group(user, "Client")
+        employee: bool = check_group(user, "Employee")
+        admin: bool = check_group(user, "Admin")
+        profile = check_profile_existence(user)  # Делаем проверочку зарегистрован ли профиль в системе
+    contex = {
+        "client": client,
+        "employee": employee,
+        "admin": admin,
+        "profile": profile,
+        "authorization": authorization,
+        "login": user.username,
+        "groups": user.groups.all()
+    }
+    return render(request, "about.html", contex)
 
 
 def login_view(request):
@@ -319,14 +341,31 @@ def personalArea(request):
     return render(request, "personal.html", contex_data | contex_existence | contex_wallets)
 
 
-def administration_clients(request):
-    is_anyGroup(request.user, "Admin")
-    return render(request, "administration_clients.html")
+class administrations_clients(ListView):
+    model = CustomUser
+    template_name = "administration_clients.html"
+    context_object_name = "list_clients"
 
+    def get_queryset(self):
+        login_user = self.request.GET.get("search")
+        name_user = self.request.GET.get("name")
+        surname_user = self.request.GET.get("surname")
+        patronymic_user = self.request.GET.get("patronymic")
+        filter_objects = CustomUser.objects.filter(user__groups__name__contains="Client").exclude(user__groups__name__contains="Employee")
+        if login_user:
+            filter_objects = filter_objects.filter(user__username__contains=login_user)
+        if name_user:
+            filter_objects = filter_objects.filter(name__contains=name_user)
+        if surname_user:
+            filter_objects = filter_objects.filter(surname__contains=surname_user)
+        if patronymic_user:
+            filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
+        return filter_objects
 
 def administration_employee(request):
     is_anyGroup(request.user, "Admin")
     return render(request, "administration_employee.html")
+
 
 def choice_search(request):
     is_anyGroup(request.user, "Admin")
