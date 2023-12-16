@@ -3,11 +3,9 @@ from . import views
 from .views import administrations_clients, administrations_employee
 
 urlpatterns = [
-    # ready
     path("", views.index, name="index"),
     path("reg/", views.register, name="reg_form"),
     path("reg_profile/", views.registerProfile, name="reg_form_profile"),
-    # ready
     path("logout/", views.log, name="logout"),
     path("login/", views.login_view, name="login_form"),
     path("about/", views.about, name="about_form"),

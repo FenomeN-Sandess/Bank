@@ -45,8 +45,8 @@
                     <button type="submit" class="reg_form_submit">Войти</button>
                 </div>
              </form>
-             {% if request_off %}
 
+             {% if request_off %}
                  <div class="message"> {{ message_off }}</div>
              {% elif request_error %}
                  <div class="message"> {{ message_error }}</div>
