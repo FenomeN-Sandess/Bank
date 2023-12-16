@@ -218,3 +218,7 @@ footer {
     font-weight: lighter;
     margin-bottom: 1rem;
 }
+
+select {
+    height: 1.5rem;
+}
