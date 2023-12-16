@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static "css/index_style.css" %}">
     <link rel="stylesheet" href="{% static "css/reg_form_style.css" %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,10 +26,10 @@
              alt="=Oops...">
 
          <div class="reg_form_container_content">
-             <div class="reg_form_header">
-                 Lab.Bank
-             </div>
              <form class="reg_form" action="" method="post">
+                 <div class="reg_form_header">
+                     Course.Bank
+                </div>
                  {% csrf_token %}
                  <div class="reg_form_input_block">
                     <label for="username_label"> логин </label>
@@ -45,6 +46,7 @@
                 </div>
              </form>
              {% if request_off %}
+
                  <div class="message"> {{ message_off }}</div>
              {% elif request_error %}
                  <div class="message"> {{ message_error }}</div>

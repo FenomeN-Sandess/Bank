@@ -20,6 +20,21 @@ a {
     color: black;
 }
 
+.button_link {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #A594F9;
+    margin-bottom: 1rem;
+    border-radius: 1.5rem;
+    padding: .5rem 1rem;
+    transition: background-color .2s ease-out;
+}
+
+.button_link:hover {
+    background-color: #FAA916FF;
+}
+
 /*---HEADER---*/
 
 header {

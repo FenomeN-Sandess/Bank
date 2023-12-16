@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: 'Roboto Condensed', sans-serif;
-    font-size: 15px;
+    font-size: 1rem;
 }
 
 .reg_container {
@@ -14,8 +14,8 @@ body {
     height: 100vh;
 
     background: linear-gradient(120deg,
-                                rgba(201, 95, 206, 0.78),
-                                rgba(1, 217, 230, 0.7));
+                                #1B1B1E,
+                                #6D676E);
 
 }
 
@@ -25,19 +25,20 @@ body {
     width: 50%;
     height: 70%;
 
-    border-radius: 5px;
+    padding: 2rem 4rem;
 
-    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 1.5rem;
 
-    background: #ffffff;
+    box-shadow: 0 0 1rem .1rem rgba(0, 0, 0, 0.05);
+
+    background: #1B1B1E;
 
     align-items: center;
 }
 
 .reg_form_container_content {
     width: 80%;
-
-    margin: auto;
+    height: 100%;
 }
 
 .reg_form_img {
@@ -45,41 +46,40 @@ body {
 
     width: 40%;
 
-    margin-top: 100px;
-    margin-left: 570px;
+    right: 0;
+    bottom: 2%;
 }
 
 .reg_form_header {
     display: inline-block;
 
     font-family: 'Raleway', sans-serif;
-    font-size: 55px;
+    font-size: 3rem;
     font-weight: 1000;
 
     text-transform: uppercase;
     text-align: start;
 
 
-    background: linear-gradient(-45deg, #c95fcec7, #01d9e6b3);
+    background: linear-gradient(-45deg, #FAA916, #A594F9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-
-    margin-top: 35px;
-    margin-bottom: 50px;
 }
 
 .reg_form {
+    display: flex;
+    justify-content: space-around;
     flex-direction: column;
     align-content: start;
+    height: 100%;
 }
 
 .reg_form_input_block {
     display: flex;
     width: 68%;
+    height: auto;
 
     text-transform: uppercase;
-
-    margin-bottom: 30px;
 
     flex-direction: column;
 
@@ -89,6 +89,11 @@ body {
     font-weight: bold;
 }
 
+label {
+    margin-bottom: .7rem;
+    color: #FFFFFF;
+}
+
 .reg_form_input {
     font-size: inherit;
     font-family: inherit;
@@ -96,14 +101,12 @@ body {
 
     color: black;
 
-    border-radius: 5px;
+    border-radius: .5rem;
     border-width: 0;
 
     background: #E6E6E6;
 
-    height: 50px;
-
-    margin: 12px 0;
+    height: 3rem;
 
     padding: 0 10px;
 }
@@ -116,19 +119,17 @@ body {
 .reg_form_submit {
     font-size: 25px;
     font-weight: bold;
-    color: white;
+    color: #1B1B1E;
 
-    border-radius: 5px;
+    border-radius: .5rem;
     border-width: 0;
 
-    height: 50px;
+    height: 3rem;
 
-    margin-top: 50px;
-
-    background: linear-gradient(-45deg, #c95fcec7, #01d9e6b3);
-    transition: opacity .3s;
+    background: #A594F9;
+    transition: background-color .2s ease-out;
 }
 
-.reg_form_submit:active {
-    opacity: 0.7;
+.reg_form_submit:hover {
+    background-color: #F6A823;
 }
