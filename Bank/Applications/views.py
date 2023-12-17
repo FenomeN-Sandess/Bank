@@ -142,38 +142,80 @@ def registerCreditWallet(request):
     return registerAnyWallet(request, CreditForm, CreditWallet, save_credit, "reg_form_credit.html")
 
 
-def closeWallets(request):
-    is_anyGroup(request.user, "Employee")
-    contex = {
-        "request": False,
-        "request_message": str()
-    }
+class WalletsCloseView(FormView):
+    template_name = "closing_wallet.html"
+    form_class = closingForm
+    success_url = reverse_lazy("management")
 
-    if request.method == "POST":
-        form = closingForm(request.POST)
+    def form_valid(self, form):
         numbers_wallet: list = [number.number for number in (Wallet.objects.only("number").all())]
         numbers_credit: list = [number.number for number in (CreditWallet.objects.only("number").all())]
         numbers_savings: list = [number.number for number in (SavingsWallet.objects.only("number").all())]
-        number = form.data["number"]
+        numbers = numbers_wallet + numbers_credit + numbers_savings
+        number = form.cleaned_data["number"]
         wallet_type = type_wallet(number)
-        if not (number in (numbers_wallet + numbers_credit + numbers_savings)):
-            contex.update({"request": True, "request_message": "Счёт не числится в базе"})
-        elif form.is_valid() and wallet_type:
+        if not(number in numbers):
+            messages.info(self.request, "Счёт не числится в базе")
+            return self.render_to_response({})
+        elif wallet_type:
             wallet = wallet_type.objects.get(number=number)
             if wallet_type == Wallet or wallet_type == SavingsWallet:
-                if int(wallet.amount) != 0:
-                    contex.update(
-                        {"request": True, "request_message": "Невозможно заблокировать счёт с ненулевым балансом"})
+                if int(wallet.amount) == 0: # Удаление/Блокировка счёта
+                    wallet.delete()
                 else:
-                    wallet.delete()
-                    contex.update({"request": True, "request_message": "Кошелек успешно удалён"})
+                    messages.error(self.request, "Невозможно заблокировать счёт с ненулевым балансом")
+                    return self.render_to_response({})
             elif wallet_type == CreditWallet:
-                if not (check_debtExistence(wallet)):
-                    wallet.delete()
-                    return redirect("/management")
-                contex.update(
-                    {"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
-    return render(request, "closing_wallet.html", contex)
+                if not(check_debtExistence(wallet)):
+                    wallet.delete() # Удаление/Блокировка счёта
+                else:
+                    messages.error(self.request, "Невозможно заблокировать счёт с кредитной задолженностью")
+                    return self.render_to_response({})
+        else:
+            messages.error(self.request, "Возникла ошибка")
+            return self.render_to_response({})
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.info(self.request, "Вы ввели некорректные данные либо не подтвердили пользовательское соглашение")
+        return self.render_to_response({})
+
+    def dispatch(self, request, *args, **kwargs):
+        is_anyGroup(request.user, "Employee")
+        return super().dispatch(request, *args, **kwargs)
+
+# def closeWallets(request):
+#     is_anyGroup(request.user, "Employee")
+#     contex = {
+#         "request": False,
+#         "request_message": str()
+#     }
+#
+#     if request.method == "POST":
+#         form = closingForm(request.POST)
+#         numbers_wallet: list = [number.number for number in (Wallet.objects.only("number").all())]
+#         numbers_credit: list = [number.number for number in (CreditWallet.objects.only("number").all())]
+#         numbers_savings: list = [number.number for number in (SavingsWallet.objects.only("number").all())]
+#         number = form.data["number"]
+#         wallet_type = type_wallet(number)
+#         if not (number in (numbers_wallet + numbers_credit + numbers_savings)):
+#             contex.update({"request": True, "request_message": "Счёт не числится в базе"})
+#         elif form.is_valid() and wallet_type:
+#             wallet = wallet_type.objects.get(number=number)
+#             if wallet_type == Wallet or wallet_type == SavingsWallet:
+#                 if int(wallet.amount) != 0:
+#                     contex.update(
+#                         {"request": True, "request_message": "Невозможно заблокировать счёт с ненулевым балансом"})
+#                 else:
+#                     wallet.delete()
+#                     contex.update({"request": True, "request_message": "Кошелек успешно удалён"})
+#             elif wallet_type == CreditWallet:
+#                 if not (check_debtExistence(wallet)):
+#                     wallet.delete()
+#                     return redirect("/management")
+#                 contex.update(
+#                     {"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
+#     return render(request, "closing_wallet.html", contex)
 
 
 def transactions(request):
@@ -335,7 +377,6 @@ class administrations_clients(ListView):
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
 
-
 class administrations_employee(ListView):
     model = CustomUser
     template_name = "administration_employee.html"
@@ -357,6 +398,8 @@ class administrations_employee(ListView):
         if patronymic_user:
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
+
+
 
 
 def delete_user_view(request):
