@@ -1,10 +1,14 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from User.utils import *
 from User.models import *
 from .forms import *
+from User.procedure import *
 
 
 class UserRegistrationView(FormView):
@@ -41,9 +45,13 @@ class ProfileRegistrationView(FormView):
     def form_valid(self, form):
         current_user = User.objects.get(username=self.request.session.get("saved_username"))
         if not (check_profile_existence(current_user)):
-            current_profile = CustomUser.objects.create(user=current_user)
-            save_profile(current_profile, form)
-            return super().form_valid(form)
+            if timezone.now().date() - form.cleaned_data["date_of_birth"] < timedelta(days=365 * 18):
+                messages.error(self.request, "Регистрация в банке положена лицам не моложе 18 лет")
+                return self.render_to_response({})
+            else:
+                current_profile = CustomUser.objects.create(user=current_user)
+                save_profile(current_profile, form)
+                return super().form_valid(form)
         else:
             messages.error(self.request, "У данного пользователя уже есть профиль")
 
@@ -62,6 +70,9 @@ def registerAnyWallet(request, any_form, wallet, save, html: str):
     user = request.user
     is_anyGroup(request.user, "Employee")
     contex = {"request": False, "request_message": str()}
+    if check_session_existence(request):
+        current_user = User.objects.get(username=request.session.get("saved_username"))
+        contex.update({"login": current_user.username})
     if request.method == "POST":
         form_wallet = any_form(request.POST)
         name_user = form_wallet.data["username"]

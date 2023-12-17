@@ -24,11 +24,11 @@
                     </div>
                 </div>
                 <div class="block_text">
-                    <a class="button_link" href="/control/reg">Регистрация пользователя в системе и в банке</a>
-                    <a class="button_link" href="/control/creating_wallet">Открытие сберегательного счета </a>
-                    <a class="button_link" href="/control/creating_credit_wallet">Открытие кредитного счета </a>
-                    <a class="button_link" href="/control/creating_savings_wallet">Открытие накопительного счета </a>
-                    <a class="button_link" href="/control/closing_wallet">Закрытие счет пользователя</a>
+                    <a class="button_link" href="{% url "reg_form" %}">Регистрация пользователя в системе и в банке</a>
+                    <a class="button_link" href="{% url "reg_form_wallet" %}">Открытие сберегательного счета </a>
+                    <a class="button_link" href="{% url "reg_form_credit" %}">Открытие кредитного счета </a>
+                    <a class="button_link" href="{% url "reg_form_savings" %}">Открытие накопительного счета </a>
+                    <a class="button_link" href="{% url "closing_wallet" %}">Закрытие счет пользователя</a>
                     <a class="a_underline" href="{% url "index" %}">Вернуться назад</a>
                 </div>
             </div>

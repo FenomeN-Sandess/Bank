@@ -21,7 +21,7 @@
         </div>
         <nav class="nav_link_bar">
             {% block sidebar %}
-                <a class="nav_link" href="{% url "about_form" %}"> О нас </a>
+                <a class="nav_link" href="{% url "index" %}"> Главная страница </a>
                 {% if authorization %} {# Проверка на авторизацию пользователя #}
                     {% if admin %}
                         <a href="{% url "choice_search" %}" class="nav_link">Администрирование</a>
@@ -32,9 +32,9 @@
                     {% if client and profile %}
                         <a href="{% url "personal" %}" class="nav_link">Личный кабинет</a>
                     {% endif %}
-                    <a class="nav_link" href="/logout/"> Выход </a>
+                    <a class="nav_link" href="{% url "logout" %}"> Выход </a>
                 {% else %}
-                    <a class="nav_link" href="/login/"> Вход </a>
+                    <a class="nav_link" href="{% url "login_form" %}"> Вход </a>
                 {% endif %}
             {% endblock %}
         </nav>

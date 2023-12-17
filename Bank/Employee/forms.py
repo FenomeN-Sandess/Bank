@@ -48,6 +48,7 @@ class CreditForm(BaseForm):
     percent = forms.DecimalField(max_digits=5, decimal_places=2)
     limit = forms.DecimalField(max_digits=12, decimal_places=2)
 
+
 class closingForm(forms.Form):
     number = forms.CharField(required=False, min_length=20, max_length=20)
     checkbox = forms.BooleanField(required=True)
