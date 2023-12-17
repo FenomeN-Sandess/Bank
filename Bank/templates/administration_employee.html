@@ -21,10 +21,8 @@
             let sort_by_fio_block = document.getElementById('sort_by_fio');
 
             let sort_button = document.getElementById('sort_button');
-            let reset_sort_button = document.getElementById('reset_sort_button');
 
             sort_button.style.display = 'block';
-            reset_sort_button.style.display = 'block'
 
             if (obj === 'login') {
                 sort_by_login_block.style.display = 'block';
@@ -35,91 +33,179 @@
                 sort_by_login_block.style.display = 'none';
             }
         }
+
+        function openclose_user_info(user_id) {
+            let user = document.getElementById(user_id);
+            if (user.style.display === 'none' || user.style.display === '') {
+                setTimeout(function () {
+                    user.style.display = 'flex';
+                }, 0); // Измените эту задержку по желанию, чтобы она была достаточной для завершения анимаций
+            } else {
+                user.style.display = 'none';
+            }
+        }
+
+        function open_action(text) {
+            let window = document.getElementById('window');
+            let window_text = document.getElementById('window_text')
+            let underlayer = document.getElementById('window_underlayer')
+            window_text.innerText = text;
+            window.style.display = 'block';
+            underlayer.style.display = 'block';
+        }
+
+        function close_action() {
+            location.reload();
+            let added_item_button = document.getElementById('window');
+            let underlayer = document.getElementById('window_underlayer')
+            added_item_button.style.display = 'none';
+            underlayer.style.display = 'none';
+        }
     </script>
 </head>
 <body>
-<div class="administration_section">
-    <div class="adm_container">
-        <div class="page_title">
-            <b>ПОИСК СРЕДИ СЛУЖАЩИХ</b>
-            <a class="a_underline" href="{% url "choice_search" %}">Назад</a>
-            <a class="a_underline" href="{% url "index" %}">На главную</a>
+
+
+<section>
+
+    <div class="window_container">
+        <div class="window_underlayer" id="window_underlayer">
         </div>
-        <div class="sort_settings">
-            <div class="top_block">
-                <div class="top_block_elem">
-                    <button id="sort_by_login_button" onclick="sort_by('login')">Сортировка по логину</button>
-                    <button id="sort_by_fio_button" onclick="sort_by('fio')">Сортировка по ФИО</button>
-                </div>
+        <div class="window" id="window">
+            <button class="window_close_button" onclick="close_action()">
+
+            </button>
+            <div class="window_text" id="window_text">
+
             </div>
-
-            <div class="sort_form">
-                <form method="GET" action="{% url "administration_clients" %}">
-
-                    <div class="sort_by" id="sort_by_login">
-                        {#  Сортировка по логину  #}
-                        <div class="form_title">Поиск по логину</div>
-                        <div class="form_block">
-                            <label for="id_login">Логин</label>
-                            <input id="id_login" type="text" name="search" placeholder="Введите логин...">
-                        </div>
-                    </div>
-
-
-                    <div class="sort_by" id="sort_by_fio">
-                        {#  Сортировка по ФИО  #}
-                        <div class="form_title">Поиск по ФИО</div>
-
-                        <div class="full_name">
-                            <div class="form_block">
-                                <label for="id_surname">Фамилия</label>
-                                <input id="id_surname" name="surname" type="text" placeholder="Введите фамилию...">
-                            </div>
-                            <div class="form_block">
-                                <label for="id_name">Имя</label>
-                                <input id="id_name" name="name" type="text" placeholder="Введите имя...">
-                            </div>
-
-                            <div class="form_block">
-                                <label for="id_patronymic">Отчество</label>
-                                <input id="id_patronymic" name="patronymic" type="text"
-                                       placeholder="Введите отчество...">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="submit_button_block" id="sort_button">
-                        <button type="submit">Сортировать</button>
-                    </div>
-
-                </form>
-                <a class="a_underline" id="reset_sort_button" href="{% url "administration_clients" %}">Сбросить сортировку</a>
-            </div>
-        </div>
-
-        <div class="table">
-            {% for client in list_clients %}
-                <div class="client-item">
-                    <form class="client-form" data-username="{{ client.user.username }}">
-                        {% csrf_token %}
-                        <button type="button" class="client-button">
-                            {{ client.surname }} {{ client.name }} {{ client.patronymic }} <br>{{ client.user }}
-                        </button>
-                        <button type="button" class="deleteBtn">Удалить пользователя</button>
-                        <input type="hidden" class="username" value="{{ client.user.username }}">
-                        <button type="button" class="levelUpBtn">Выдать роль служащего</button>
-                        <div class="operation-message" style="display: none;"></div>
-                    </form>
-                    <div class="additional-buttons">
-
-                    </div>
-                    <hr>
-                </div>
-
-            {% endfor %}
         </div>
     </div>
-</div>
+
+    <div class="administration_section">
+
+        <div class="adm_container">
+            <div class="page_title">
+                <b>ПОИСК СРЕДИ СЛУЖАЩИХ</b>
+                <a class="a_underline" href="{% url "choice_search" %}">Назад</a>
+                <a class="a_underline" href="{% url "index" %}">На главную</a>
+            </div>
+            <div class="sort_settings">
+                <div class="top_block">
+                    <div class="top_block_elem">
+                        <button id="sort_by_login_button" onclick="sort_by('login')">Сортировка по логину</button>
+                        <button id="sort_by_fio_button" onclick="sort_by('fio')">Сортировка по ФИО</button>
+                        <a class="a_underline" href="{% url "administration_clients" %}">Сбросить
+                            сортировку</a>
+
+                    </div>
+                </div>
+
+                <div class="sort_form">
+                    <form method="GET" action="{% url "administration_clients" %}">
+
+                        <div class="sort_by" id="sort_by_login">
+                            {#  Сортировка по логину  #}
+                            <div class="form_title">Поиск по логину</div>
+                            <div class="form_block">
+                                <label for="id_login">Логин</label>
+                                <input id="id_login" type="text" name="search" placeholder="Введите логин...">
+                            </div>
+                        </div>
+
+
+                        <div class="sort_by" id="sort_by_fio">
+                            {#  Сортировка по ФИО  #}
+                            <div class="form_title">Поиск по ФИО</div>
+
+                            <div class="full_name">
+                                <div class="form_block">
+                                    <label for="id_surname">Фамилия</label>
+                                    <input id="id_surname" name="surname" type="text" placeholder="Введите фамилию...">
+                                </div>
+                                <div class="form_block">
+                                    <label for="id_name">Имя</label>
+                                    <input id="id_name" name="name" type="text" placeholder="Введите имя...">
+                                </div>
+
+                                <div class="form_block">
+                                    <label for="id_patronymic">Отчество</label>
+                                    <input id="id_patronymic" name="patronymic" type="text"
+                                           placeholder="Введите отчество...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="submit_button_block" id="sort_button">
+                            <button type="submit">Сортировать</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="table">
+                {% for client in list_clients %}
+                    <div class="client-item">
+                        <form class="client-form" data-username="{{ client.user.username }}">
+                            {% csrf_token %}
+                            <button type="button" class="client-button"
+                                    onclick="openclose_user_info('{{ client.user.username }}')">
+                                {{ client.surname }} {{ client.name }} {{ client.patronymic }}
+                            </button>
+
+                            <div class="client-info-buttons" id="{{ client.user.username }}">
+                                <div class="client-info">
+                                    <div class="client-info-block">
+                                        <b>Логин:</b> {{ client.user }}
+                                    </div>
+                                    <div class="client-info-block">
+                                        {% if client.creditwallet.number %}
+                                            <b>Номер и валюта кредитного счета</b><br>{{ client.creditwallet.number }}
+                                            {{ client.creditwallet.currency }} <br>
+                                        {% endif %}
+                                    </div>
+                                    <div class="client-info-block">
+                                        {% if client.wallet.number %}
+                                            <b>Номер и валюта сберегательного счета</b><br>{{ client.wallet.number }}
+                                            {{ client.wallet.currency }} <br>
+                                        {% endif %}
+                                    </div>
+                                    <div class="client-info-block">
+                                        {% if client.savingswallet.number %}
+                                            <b>Номер и валюта накопительного счета:</b><br>
+                                            {{ client.savingswallet.number }}
+                                            {{ client.savingswallet.currency }} <br>
+                                        {% endif %}
+                                    </div>
+                                    <div class="client-info-block">
+                                        <b>Номер телефона:</b> {{ client.phone_number }}
+                                    </div>
+                                    <div class="client-info-block">
+                                        <b>Дата рождения: </b> {{ client.date_of_birth }}
+                                    </div>
+                                </div>
+
+                                <div class="client-buttons">
+                                    <button onclick="open_action('Пользователь успешно удален')" type="button"
+                                            class="deleteBtn">Удалить пользователя
+                                    </button>
+                                    <input type="hidden" class="username" value="{{ client.user.username }}">
+                                    <button onclick="open_action('Роль служащего успешно удалена')" type="button"
+                                            class="downUpBtn">Удалить роль служащего
+                                    </button>
+                                    <div class="operation-message" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="additional-buttons">
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

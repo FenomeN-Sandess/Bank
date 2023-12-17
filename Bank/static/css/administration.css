@@ -2,7 +2,14 @@ button {
     width: 100%;
 }
 
+section {
+    align-items: center;
+    justify-content: start;
+    padding: 0;
+}
+
 .administration_section {
+    position: relative;
     display: flex;
     justify-content: center;
     height: auto;
@@ -27,7 +34,7 @@ button {
     flex-direction: row;
     padding: 2rem 0;
     border-bottom: solid 0.1em black;
-    border-top: solid 0.1em black ;
+    border-top: solid 0.1em black;
 }
 
 .top_block {
@@ -58,16 +65,95 @@ button {
     display: none;
 }
 
-#reset_sort_button {
-    display: none;
-}
-
 .client-item {
     display: flex;
-    flex-direction: row;;
+    flex-direction: row;
+    padding: .7rem 0;
+    border-bottom: solid 0.1em #6b6b6b;
 }
 
 .client-form {
     display: flex;
+    width: 100%;
     flex-direction: row;
+}
+
+.client-button {
+    width: 30%;
+    max-height: 3rem;
+    margin: 0;
+}
+
+.client-info-buttons {
+    position: relative;
+    display: none;
+    width: 70%;
+    flex-direction: row;
+}
+
+.client-info {
+    width: fit-content;
+    height: auto;
+    min-height: fit-content;
+    margin-left: 1.5rem;
+}
+
+.client-info-block {
+    margin-bottom: .7rem;
+}
+
+.client-buttons {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    gap: .5rem;
+    right: 0;
+}
+
+.client-buttons button {
+    max-height: 3rem;
+}
+
+.window_container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.window_underlayer {
+    position: absolute;
+    display: none;
+    width: 100vw;
+    height: 100%;
+    background-color: black;
+    opacity: .6;
+    z-index: 10;
+}
+
+.window {
+    display: none;
+    position: absolute;
+    width: auto;
+    height: auto;
+    top: 20%;
+    padding: 2rem 3rem;
+    background: #2f2e2f;
+    box-shadow: 0 0 1rem .1rem rgba(256, 256, 256, .2);
+    color: #f0edee;
+    z-index: 10;
+}
+
+.window_close_button {
+    position: absolute;
+    padding: 0;
+    border-radius: 0;
+    right: 0;
+    top: 0;
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+    background: #A594F9FF;
 }

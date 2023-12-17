@@ -19,11 +19,11 @@
 </head>
 
 <body>
-    <div class="reg_container">
-        <div class="reg_form_container">
+<div class="reg_container">
+    <div class="reg_form_container">
 
-            <img class="reg_form_img" src="{% static "img/reg_form_img_pig.png" %}"
-                 alt="=Oops...">
+        <img class="reg_form_img" src="{% static "img/reg_form_img_pig.png" %}"
+             alt="=Oops...">
 
         <div class="reg_form_container_content">
             <form class="reg_form" action="" method="post">
@@ -45,22 +45,17 @@
                     <button type="submit" class="reg_form_submit">Войти</button>
                 </div>
             </form>
-            {% if request_off %}
-
-                <div class="message"> {{ message_off }}</div>
-            {% elif request_error %}
-                <div class="message"> {{ message_error }}</div>
-            {% endif %}
+            <div class="message_error">
+                {% if messages %}
+                    {% for message in messages %}
+                        {{ message.message }}
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
-<div class="message_error">
-    {% if messages %}
-        {% for message in messages %}
-            {{ message.message }}
-        {% endfor %}
-    {% endif %}
-</div>
+
 </body>
 
 </html>
