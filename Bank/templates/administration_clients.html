@@ -103,6 +103,17 @@
                         <button type="button" class="client-button">
                             {{ client.surname }} {{ client.name }} {{ client.patronymic }} <br>{{ client.user }}
                         </button>
+                        {% if client.creditwallet.number %}
+                            {{ client.creditwallet.number }}
+                        {% endif %} {{ client.creditwallet.currency }} <br>
+                        {% if client.wallet.number %}
+                            {{ client.wallet.number }}{{ client.wallet.currency }} <br>
+                        {% endif %}
+                        {% if client.savingswallet.number %}
+                            {{ client.savingswallet.number }} {{ client.savingswallet.currency }}<br>
+                        {% endif %}
+                        {{ client.phone_number }}
+                        {{ client.date_of_birth }}
                         <button type="button" class="deleteBtn">Удалить пользователя</button>
                         <input type="hidden" class="username" value="{{ client.user.username }}">
                         <button type="button" class="levelUpBtn">Выдать роль служащего</button>

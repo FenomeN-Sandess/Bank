@@ -377,7 +377,6 @@ class administrations_clients(ListView):
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
 
-
 class administrations_employee(ListView):
     model = CustomUser
     template_name = "administration_employee.html"
@@ -399,6 +398,8 @@ class administrations_employee(ListView):
         if patronymic_user:
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
+
+
 
 
 def delete_user_view(request):
