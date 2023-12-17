@@ -1,18 +1,41 @@
-section {
+button {
+    width: 100%;
+}
+
+.administration_section {
     display: flex;
     justify-content: center;
     height: auto;
     width: 100%;
 }
 
-.container {
+.adm_container {
     width: 80%;
     padding: 1rem 0;
 }
 
+.page_title {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    margin-bottom: 1rem;
+}
+
+.sort_settings {
+    display: flex;
+    gap: 3rem;
+    flex-direction: row;
+    padding: 2rem 0;
+    border-bottom: solid 0.1em black;
+    border-top: solid 0.1em black ;
+}
+
 .top_block {
-    width: 100%;
-    margin-bottom: 2rem;
+    width: auto;
+}
+
+.top_block_elem {
+    margin-bottom: .8rem;
 }
 
 .sort_by {
@@ -20,7 +43,7 @@ section {
 }
 
 .sort_form {
-    margin-bottom: 2rem;
+    width: auto;
 }
 
 .form_title {
@@ -37,4 +60,14 @@ section {
 
 #reset_sort_button {
     display: none;
+}
+
+.client-item {
+    display: flex;
+    flex-direction: row;;
+}
+
+.client-form {
+    display: flex;
+    flex-direction: row;
 }

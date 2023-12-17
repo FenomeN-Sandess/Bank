@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
+
+    <link rel="stylesheet" href="{% static "css/index_style.css" %}">
     <link rel="stylesheet" href="{% static "css/administration.css" %}">
-    {% comment %}    <link rel="stylesheet" href="{% static "css/index_style.css" %}">{% endcomment %}
     <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +17,9 @@
 
     <script>
         function sort_by(obj) {
-            let sort_by_login = document.getElementById('sort_by_login');
-            let sort_by_fio = document.getElementById('sort_by_fio');
+            let sort_by_login_block = document.getElementById('sort_by_login');
+            let sort_by_fio_block = document.getElementById('sort_by_fio');
+
             let sort_button = document.getElementById('sort_button');
             let reset_sort_button = document.getElementById('reset_sort_button');
 
@@ -25,75 +27,76 @@
             reset_sort_button.style.display = 'block'
 
             if (obj === 'login') {
-                sort_by_login.style.display = 'block';
-                sort_by_fio.style.display = 'none';
+                sort_by_login_block.style.display = 'block';
+                sort_by_fio_block.style.display = 'none';
             }
             if (obj === 'fio') {
-                sort_by_fio.style.display = 'block';
-                sort_by_login.style.display = 'none'
+                sort_by_fio_block.style.display = 'block';
+                sort_by_login_block.style.display = 'none';
             }
         }
     </script>
-
 </head>
 <body>
 
-<section>
-    <div class="container">
-        <div class="top_block">
-            ПОИСК СРЕДИ КЛИЕНТОВ
-
-            <div class="links">
-                <a href="{% url "choice_search" %}">Назад</a>
-                <a href="{% url "index" %}">На главную</a>
-            </div>
-
-            <div class="sort_buttons">
-                <button onclick="sort_by('login')">Сортировка по логину</button>
-                <button onclick="sort_by('fio')">Сортировка по ФИО</button>
-            </div>
+<div class="administration_section">
+    <div class="adm_container">
+        <div class="page_title">
+            <b>ПОИСК СРЕДИ КЛИЕНТОВ</b>
+            <a class="a_underline" href="{% url "choice_search" %}">Назад</a>
+            <a class="a_underline" href="{% url "index" %}">На главную</a>
         </div>
-
-        <div class="sort_form">
-            <form method="GET" action="{% url "administration_clients" %}">
-
-                <div class="sort_by" id="sort_by_login">
-                    {#  Сортировка по логину  #}
-                    <label for="id_login">Поиск по логину </label>
-                    <input id="id_login" type="text" name="search" placeholder="Введите логин">
+        <div class="sort_settings">
+            <div class="top_block">
+                <div class="top_block_elem">
+                    <button id="sort_by_login_button" onclick="sort_by('login')">Сортировка по логину</button>
+                    <button id="sort_by_fio_button" onclick="sort_by('fio')">Сортировка по ФИО</button>
                 </div>
+            </div>
 
+            <div class="sort_form">
+                <form method="GET" action="{% url "administration_clients" %}">
 
-                <div class="sort_by" id="sort_by_fio">
-                    {#  Сортировка по ФИО  #}
-                    <div class="form_title">Поиск по ФИО</div>
-
-                    <div class="full_name">
+                    <div class="sort_by" id="sort_by_login">
+                        {#  Сортировка по логину  #}
+                        <div class="form_title">Поиск по логину</div>
                         <div class="form_block">
-                            <label for="id_surname">Фамилия</label>
-                            <input id="id_surname" name="surname" type="text" placeholder="Введите фамилию...">
-                        </div>
-                        <div class="form_block">
-                            <label for="id_name">Имя</label>
-                            <input id="id_name" name="name" type="text" placeholder="Введите имя...">
-                        </div>
-
-                        <div class="form_block">
-                            <label for="id_patronymic">Отчество</label>
-                            <input id="id_patronymic" name="patronymic" type="text" placeholder="Введите отчество...">
+                            <label for="id_login">Логин</label>
+                            <input id="id_login" type="text" name="search" placeholder="Введите логин...">
                         </div>
                     </div>
-                </div>
 
-                <div class="submit_button_block" id="sort_button">
-                    <button type="submit">Сортировать</button>
-                </div>
 
-            </form>
+                    <div class="sort_by" id="sort_by_fio">
+                        {#  Сортировка по ФИО  #}
+                        <div class="form_title">Поиск по ФИО</div>
+
+                        <div class="full_name">
+                            <div class="form_block">
+                                <label for="id_surname">Фамилия</label>
+                                <input id="id_surname" name="surname" type="text" placeholder="Введите фамилию...">
+                            </div>
+                            <div class="form_block">
+                                <label for="id_name">Имя</label>
+                                <input id="id_name" name="name" type="text" placeholder="Введите имя...">
+                            </div>
+
+                            <div class="form_block">
+                                <label for="id_patronymic">Отчество</label>
+                                <input id="id_patronymic" name="patronymic" type="text"
+                                       placeholder="Введите отчество...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="submit_button_block" id="sort_button">
+                        <button type="submit">Сортировать</button>
+                    </div>
+
+                </form>
+                <a class="a_underline" id="reset_sort_button" href="{% url "administration_clients" %}">Сбросить сортировку</a>
+            </div>
         </div>
-
-        {# Кнопочкой нужно сделать тоже   #}
-        <a id="reset_sort_button" href="{% url "administration_clients" %}">Сбросить сортировку</a>
 
         <div class="table">
             {% for client in list_clients %}
@@ -117,7 +120,7 @@
             {% endfor %}
         </div>
     </div>
-</section>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
