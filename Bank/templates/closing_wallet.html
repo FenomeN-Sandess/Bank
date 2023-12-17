@@ -38,10 +38,10 @@
                         <button>Закрыть счёт</button>
                     </form>
                     <div class="message_error">
-                        {% if request %}
-                            <div class="request_message">
-                                {{ request_message }}
-                            </div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {{ message.message }}
+                            {% endfor %}
                         {% endif %}
                     </div>
                     <a class="a_underline" href="/management">Вернуться назад</a>

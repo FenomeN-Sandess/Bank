@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import administrations_clients, administrations_employee, AboutView, IndexView, LoginView, WalletsCloseView, UserRegistrationView, ProfileRegistrationView
+from .views import administrations_clients, administrations_employee, AboutView, IndexView, LoginView, WalletsCloseView, UserRegistrationView, ProfileRegistrationView, PersonalAreaView
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
@@ -9,7 +9,7 @@ urlpatterns = [
     path("logout/", views.log, name="logout"),
     path("login/", LoginView.as_view(), name="login_form"),
     path("about/", AboutView.as_view(), name="about_form"),
-    path("private_office/", views.personalArea, name="personal"),
+    path("private_office/", PersonalAreaView.as_view(), name="personal"),
     path("creating_wallet/", views.registerWallet, name="reg_form_wallet"),
     path("creating_savings_wallet/", views.registerSavingsWallet, name="reg_form_savings"),
     path("creating_credit_wallet/", views.registerCreditWallet, name="reg_form_credit"),

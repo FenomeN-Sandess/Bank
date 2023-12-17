@@ -88,7 +88,7 @@ class ProfileRegistrationView(FormView):
 
     def form_valid(self, form):
         current_user = User.objects.get(username=self.request.session.get("saved_username"))
-        if not(check_profile_existence(current_user)):
+        if not (check_profile_existence(current_user)):
             current_profile = CustomUser.objects.create(user=current_user)
             save_profile(current_profile, form)
             return super().form_valid(form)
@@ -154,20 +154,20 @@ class WalletsCloseView(FormView):
         numbers = numbers_wallet + numbers_credit + numbers_savings
         number = form.cleaned_data["number"]
         wallet_type = type_wallet(number)
-        if not(number in numbers):
-            messages.info(self.request, "Счёт не числится в базе")
+        if not (number in numbers):
+            messages.error(self.request, "Счёт не числится в базе")
             return self.render_to_response({})
         elif wallet_type:
             wallet = wallet_type.objects.get(number=number)
             if wallet_type == Wallet or wallet_type == SavingsWallet:
-                if int(wallet.amount) == 0: # Удаление/Блокировка счёта
+                if int(wallet.amount) == 0:  # Удаление/Блокировка счёта
                     wallet.delete()
                 else:
                     messages.error(self.request, "Невозможно заблокировать счёт с ненулевым балансом")
                     return self.render_to_response({})
             elif wallet_type == CreditWallet:
-                if not(check_debtExistence(wallet)):
-                    wallet.delete() # Удаление/Блокировка счёта
+                if not (check_debtExistence(wallet)):
+                    wallet.delete()  # Удаление/Блокировка счёта
                 else:
                     messages.error(self.request, "Невозможно заблокировать счёт с кредитной задолженностью")
                     return self.render_to_response({})
@@ -177,45 +177,12 @@ class WalletsCloseView(FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.info(self.request, "Вы ввели некорректные данные либо не подтвердили пользовательское соглашение")
+        messages.error(self.request, "Вы ввели некорректные данные либо не подтвердили пользовательское соглашение")
         return self.render_to_response({})
 
     def dispatch(self, request, *args, **kwargs):
         is_anyGroup(request.user, "Employee")
         return super().dispatch(request, *args, **kwargs)
-
-# def closeWallets(request):
-#     is_anyGroup(request.user, "Employee")
-#     contex = {
-#         "request": False,
-#         "request_message": str()
-#     }
-#
-#     if request.method == "POST":
-#         form = closingForm(request.POST)
-#         numbers_wallet: list = [number.number for number in (Wallet.objects.only("number").all())]
-#         numbers_credit: list = [number.number for number in (CreditWallet.objects.only("number").all())]
-#         numbers_savings: list = [number.number for number in (SavingsWallet.objects.only("number").all())]
-#         number = form.data["number"]
-#         wallet_type = type_wallet(number)
-#         if not (number in (numbers_wallet + numbers_credit + numbers_savings)):
-#             contex.update({"request": True, "request_message": "Счёт не числится в базе"})
-#         elif form.is_valid() and wallet_type:
-#             wallet = wallet_type.objects.get(number=number)
-#             if wallet_type == Wallet or wallet_type == SavingsWallet:
-#                 if int(wallet.amount) != 0:
-#                     contex.update(
-#                         {"request": True, "request_message": "Невозможно заблокировать счёт с ненулевым балансом"})
-#                 else:
-#                     wallet.delete()
-#                     contex.update({"request": True, "request_message": "Кошелек успешно удалён"})
-#             elif wallet_type == CreditWallet:
-#                 if not (check_debtExistence(wallet)):
-#                     wallet.delete()
-#                     return redirect("/management")
-#                 contex.update(
-#                     {"request": True, "request_message": "Невозможно заблокировать счёт с кредитной задолженностью"})
-#     return render(request, "closing_wallet.html", contex)
 
 
 def transactions(request):
@@ -287,12 +254,15 @@ def transactions(request):
         else:
             contex_request.update({"request": True, "request_message": "Введенные данные невалидны"})
     contex = contex_bool | contex_existence | contex_request | contex_data
+
+    userinfo = UserInfo()
+    contex.update(userinfo.get_user_info(request))
+
     return render(request, "transactions.html", contex)
 
 
 def management(request):
     is_anyGroup(request.user, "Employee")
-
     return render(request, "management.html")
 
 
@@ -301,58 +271,73 @@ def choice(request):
     return render(request, "choice_wallet.html")
 
 
-def personalArea(request):
-    user = request.user
-    is_anyGroup(user, "Client")
-    profile = user.customuser
+class PersonalAreaView(UserInfo, View):
+    template_name = "personal.html"
 
-    contex_data = {
-        "name": profile.name,
-        "surname": profile.surname,
-        "patronymic": profile.patronymic,
-        "itn": profile.itn,
-        "phone_number": profile.phone_number,
-        "date_of_birth": profile.date_of_birth,
-        "passport_series": profile.passport_series,
-        "passport_number": profile.passport_number
-    }
+    def get(self, request):
+        user = self.request.user
+        # Проверка на то, что пользователь принадлежит группе "Client"
+        is_anyGroup(request.user, "Client")
+        profile = user.customuser
 
-    isThere_wallet = check_wallets_existence(Wallet, user)
-    isThere_credit = check_wallets_existence(CreditWallet, user)
-    isThere_savings = check_wallets_existence(SavingsWallet, user)
-    contex_existence = {
-        "isThere_wallet": isThere_wallet,
-        "isThere_credit": isThere_credit,
-        "isThere_savings": isThere_savings,
-    }
+        context = {
+            "name": profile.name,
+            "surname": profile.surname,
+            "patronymic": profile.patronymic,
+            "itn": profile.itn,
+            "phone_number": profile.phone_number,
+            "date_of_birth": profile.date_of_birth,
+            "passport_series": profile.passport_series,
+            "passport_number": profile.passport_number
+        }
 
-    contex_wallets = dict()
-    if isThere_wallet:
-        wallet = Wallet.objects.get(owner=profile)
-        contex_wallets.update({
-            "number_wallet": wallet.number,
-            "amount_wallet": wallet.amount,
-            "currency_wallet": define_str_currency(wallet.currency)
-        })
-    if isThere_credit:
-        credit = CreditWallet.objects.get(owner=profile)
-        contex_wallets.update({
-            "number_credit": credit.number,
-            "amount_credit": credit.amount,
-            "currency_credit": define_str_currency(credit.currency),
-            "limit": credit.limit,
-            "percent": credit.percent
-        })
-    if isThere_savings:
-        savings = SavingsWallet.objects.get(owner=profile)
-        contex_wallets.update({
-            "number_savings": savings.number,
-            "amount_savings": savings.amount,
-            "currency_savings": define_str_currency(savings.currency),
-            "rate": savings.rate
-        })
+        context.update(self.get_user_info(request))
+        context.update(self.get_wallets_data(profile))
 
-    return render(request, "personal.html", contex_data | contex_existence | contex_wallets)
+        return render(request, self.template_name, context)
+
+    def get_wallets_data(self, profile):
+        user = profile.user
+        isThere_wallet = check_wallets_existence(Wallet, user)
+        isThere_credit = check_wallets_existence(CreditWallet, user)
+        isThere_savings = check_wallets_existence(SavingsWallet, user)
+
+        wallets_existence = {
+            "isThere_wallet": isThere_wallet,
+            "isThere_credit": isThere_credit,
+            "isThere_savings": isThere_savings,
+        }
+
+        wallets_data = {}
+
+        if isThere_wallet:
+            wallet = Wallet.objects.get(owner=profile)
+            wallets_data.update({
+                "number_wallet": wallet.number,
+                "amount_wallet": wallet.amount,
+                "currency_wallet": define_str_currency(wallet.currency)
+            })
+
+        if isThere_credit:
+            credit = CreditWallet.objects.get(owner=profile)
+            wallets_data.update({
+                "number_credit": credit.number,
+                "amount_credit": credit.amount,
+                "currency_credit": define_str_currency(credit.currency),
+                "limit": credit.limit,
+                "percent": credit.percent
+            })
+
+        if isThere_savings:
+            savings = SavingsWallet.objects.get(owner=profile)
+            wallets_data.update({
+                "number_savings": savings.number,
+                "amount_savings": savings.amount,
+                "currency_savings": define_str_currency(savings.currency),
+                "rate": savings.rate
+            })
+
+        return {**wallets_existence, **wallets_data}
 
 
 class administrations_clients(ListView):
@@ -377,6 +362,7 @@ class administrations_clients(ListView):
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
 
+
 class administrations_employee(ListView):
     model = CustomUser
     template_name = "administration_employee.html"
@@ -398,8 +384,6 @@ class administrations_employee(ListView):
         if patronymic_user:
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
-
-
 
 
 def delete_user_view(request):
