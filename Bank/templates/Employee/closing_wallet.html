@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/index_style.css" %}">
+    <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
+          rel="stylesheet">
+
+    <title>{% block title %}Закрытие счета пользователя{% endblock %}</title>
+</head>
+<body>
+<section>
+    <div class="content_row" style="font-size: 1.2rem">
+        <div class="content_container">
+            <div class="content_block">
+                <div class="block_title" style="height: auto">
+                    <div class="block_title_text">
+                        Введите необходимые данные
+                    </div>
+                </div>
+                <div class="block_text">
+                    <form method="post" action="{% url "closing_wallet" %}">
+                        {% csrf_token %}
+                        <div class="reg_block">
+                            <label for="id_wallet_number">Введите номер счёта пользователя: </label>
+                            <input name="number" id="wallet_number" type="text">
+                        </div>
+
+                        <div class="reg_block">
+                            <label for="id_checkbox">Пользователь подтверждает действие</label>
+                            <input id="id_checkbox" name="checkbox" type="checkbox">
+                        </div>
+                        <button>Закрыть счёт</button>
+                    </form>
+                    <div class="message_error">
+                        {% if messages %}
+                            {% for message in messages %}
+                                {{ message.message }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <a class="a_underline" href="{% url "management" %}">Вернуться назад</a>
+                    <a class="a_underline" href="{% url "index" %}">Вернуться на главную страницу</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

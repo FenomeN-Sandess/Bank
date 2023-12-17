@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/index_style.css" %}">
+<!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap" rel="stylesheet">
+
+    <title>{% block title %}Выбор счета для создания{% endblock %}</title>
+</head>
+<body>
+    <section>
+        <div class="content_row" style="font-size: 1.2rem">
+            <div class="content_container">
+                <div class="content_block">
+                    <div class="block_title" style="height: auto">
+                        <div class="block_title_text">
+                            Желаете создать пользователю счёт?
+                        </div>
+                    </div>
+                    <div class="block_text">
+                        <a class="button_link" href="/control/creating_wallet">Сберегательный счёт</a>
+                        <a class="button_link" href="/control/creating_savings_wallet">Накопительный счёт</a>
+                        <a class="button_link" href="/control/creating_credit_wallet">Кредитный счёт</a>
+                        <a class="a_underline" href="{% url "index" %}">На главный экран</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
