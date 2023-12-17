@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from .views import administrations_clients, administrations_employee, AboutView, IndexView, LoginView, \
-    UserRegistrationView, ProfileRegistrationView
+from .views import administrations_clients, administrations_employee, AboutView, IndexView, LoginView, WalletsCloseView, UserRegistrationView, ProfileRegistrationView
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
@@ -17,7 +16,7 @@ urlpatterns = [
     path("transactions/", views.transactions, name="transactions"),
     path("management/", views.management, name="management"),
     path("choice_wallet/", views.choice, name="choice_wallet"),
-    path("closing_wallet/", views.closeWallets, name="closing_wallet"),
+    path("closing_wallet/", WalletsCloseView.as_view(), name="closing_wallet"),
     path("administration/clients", administrations_clients.as_view(), name="administration_clients"),
     path("administration/employee", administrations_employee.as_view(), name="administration_employee"),
     path("administration/", views.choice_search, name="choice_search"),
