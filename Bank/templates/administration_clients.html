@@ -1,57 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
-    <title>Администрирование клиентов</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/administration.css" %}">
+    {% comment %}    <link rel="stylesheet" href="{% static "css/index_style.css" %}">{% endcomment %}
+    <!--    <link rel="stylesheet" href="../assets/css/index_style.css">-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
+          rel="stylesheet">
+
+    <title>{% block title %}Администрирование клиентов{% endblock %}</title>
+
+    <script>
+        function sort_by(obj) {
+            let sort_by_login = document.getElementById('sort_by_login');
+            let sort_by_fio = document.getElementById('sort_by_fio');
+            let sort_button = document.getElementById('sort_button');
+            let reset_sort_button = document.getElementById('reset_sort_button');
+
+            sort_button.style.display = 'block';
+            reset_sort_button.style.display = 'block'
+
+            if (obj === 'login') {
+                sort_by_login.style.display = 'block';
+                sort_by_fio.style.display = 'none';
+            }
+            if (obj === 'fio') {
+                sort_by_fio.style.display = 'block';
+                sort_by_login.style.display = 'none'
+            }
+        }
+    </script>
+
 </head>
 <body>
-ПОИСК СРЕДИ КЛИЕНТОВ
-<a href="{% url "choice_search" %}">Назад</a>
-<a href="{% url "index" %}">На главную</a>
-<button>Сортировка по логину</button>
-<button>Сортировка по ФИО</button>
 
-<form method="GET" action="{% url "administration_clients" %}">
+<section>
+    <div class="container">
+        <div class="top_block">
+            ПОИСК СРЕДИ КЛИЕНТОВ
 
-    {#  Сортировка по логину  #}
-    <label for="id_login">Поиск по логину </label>
-    <input id="id_login" type="text" name="search" placeholder="Введите логин">
-    <br>
-    {#  Сортировка по ФИО  #}
-    <label>Поиск по ФИО</label>
+            <div class="links">
+                <a href="{% url "choice_search" %}">Назад</a>
+                <a href="{% url "index" %}">На главную</a>
+            </div>
 
-    <div class="full_name">
-        <label for="id_surname">Фамилия</label><input id="id_surname" name="surname" type="text"
-                                                      placeholder="Введите фамилию..."> <br>
-        <label for="id_name">Имя</label><input id="id_name" name="name" type="text" placeholder="Введите имя..."> <br>
-        <label for="id_patronymic">Отчество</label>
-        <input id="id_patronymic" name="patronymic" type="text"
-                                                          placeholder="Введите отчество..."> <br>
-    </div>
-    <button type="submit">Сортировать</button>
-</form>
-{# Кнопочкой нужно сделать тоже   #}
-<a href="{% url "administration_clients" %}">Отменить изменения</a>
-
-{% for client in list_clients %}
-    <div class="client-item">
-        <form class="client-form" data-username="{{ client.user.username }}">
-            {% csrf_token %}
-            <button type="button" class="client-button">
-                {{ client.surname }} {{ client.name }} {{ client.patronymic }} <br>{{ client.user }}
-            </button>
-            <button type="button" class="deleteBtn">Удалить пользователя</button>
-            <input type="hidden" class="username" value="{{ client.user.username }}">
-            <button type="button" class="levelUpBtn">Выдать роль служащего</button>
-            <div class="operation-message" style="display: none;"></div>
-        </form>
-        <div class="additional-buttons">
-
+            <div class="sort_buttons">
+                <button onclick="sort_by('login')">Сортировка по логину</button>
+                <button onclick="sort_by('fio')">Сортировка по ФИО</button>
+            </div>
         </div>
-        <hr>
+
+        <div class="sort_form">
+            <form method="GET" action="{% url "administration_clients" %}">
+
+                <div class="sort_by" id="sort_by_login">
+                    {#  Сортировка по логину  #}
+                    <label for="id_login">Поиск по логину </label>
+                    <input id="id_login" type="text" name="search" placeholder="Введите логин">
+                </div>
+
+
+                <div class="sort_by" id="sort_by_fio">
+                    {#  Сортировка по ФИО  #}
+                    <div class="form_title">Поиск по ФИО</div>
+
+                    <div class="full_name">
+                        <div class="form_block">
+                            <label for="id_surname">Фамилия</label>
+                            <input id="id_surname" name="surname" type="text" placeholder="Введите фамилию...">
+                        </div>
+                        <div class="form_block">
+                            <label for="id_name">Имя</label>
+                            <input id="id_name" name="name" type="text" placeholder="Введите имя...">
+                        </div>
+
+                        <div class="form_block">
+                            <label for="id_patronymic">Отчество</label>
+                            <input id="id_patronymic" name="patronymic" type="text" placeholder="Введите отчество...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit_button_block" id="sort_button">
+                    <button type="submit">Сортировать</button>
+                </div>
+
+            </form>
+        </div>
+
+        {# Кнопочкой нужно сделать тоже   #}
+        <a id="reset_sort_button" href="{% url "administration_clients" %}">Сбросить сортировку</a>
+
+        <div class="table">
+            {% for client in list_clients %}
+                <div class="client-item">
+                    <form class="client-form" data-username="{{ client.user.username }}">
+                        {% csrf_token %}
+                        <button type="button" class="client-button">
+                            {{ client.surname }} {{ client.name }} {{ client.patronymic }} <br>{{ client.user }}
+                        </button>
+                        <button type="button" class="deleteBtn">Удалить пользователя</button>
+                        <input type="hidden" class="username" value="{{ client.user.username }}">
+                        <button type="button" class="levelUpBtn">Выдать роль служащего</button>
+                        <div class="operation-message" style="display: none;"></div>
+                    </form>
+                    <div class="additional-buttons">
+
+                    </div>
+                    <hr>
+                </div>
+
+            {% endfor %}
+        </div>
     </div>
-{% endfor %}
+</section>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

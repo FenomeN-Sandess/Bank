@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
-    <title>Администрирование служащих</title>
+    {% load static %}
+{#    <link rel="stylesheet" href="{% static "css/index_style.css" %}">#}
+    <link rel="stylesheet" href="{% static "css/administration.css" %}">
+{% comment %}    <link rel="stylesheet" href="{% static "css/index_style.css" %}">{% endcomment %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
+          rel="stylesheet">
+
+    <title>{% block title %}Администрирование работников{% endblock %}</title>
 </head>
 <body>
 ПОИСК СРЕДИ СЛУЖАЩИХ
 <a href="{% url "choice_search" %}">Назад</a>
 <a href="{% url "index" %}">На главную</a>
 <button>Сортировка по логину</button>
-<button>Сортировка по ФИО </button>
+<button>Сортировка по ФИО</button>
 
 <form method="GET" action="{% url "administration_clients" %}">
 
@@ -22,80 +31,82 @@
     <label>Поиск по ФИО</label>
 
     <div class="full_name">
-        <label for="id_surname">Фамилия</label><input id="id_surname" name="surname" type="text"  placeholder="Введите фамилию..."> <br>
-        <label for="id_name">Имя</label><input id="id_name" name="name" type="text" placeholder="Введите имя...">  <br>
-        <label for="id_patronymic">Отчество</label><input id="id_patronymic" name="patronymic" type="text" placeholder="Введите отчество...">  <br>
+        <label for="id_surname">Фамилия</label><input id="id_surname" name="surname" type="text"
+                                                      placeholder="Введите фамилию..."> <br>
+        <label for="id_name">Имя</label><input id="id_name" name="name" type="text" placeholder="Введите имя..."> <br>
+        <label for="id_patronymic">Отчество</label><input id="id_patronymic" name="patronymic" type="text"
+                                                          placeholder="Введите отчество..."> <br>
     </div>
     <button type="submit">Сортировать</button>
 </form>
-    {# Кнопочкой нужно сделать тоже   #}
-    <a href="{% url "administration_clients" %}">Отменить изменения</a>
+{# Кнопочкой нужно сделать тоже   #}
+<a href="{% url "administration_clients" %}">Отменить изменения</a>
 
-    {% for client in list_clients %}
-        <div class="client-item">
-            <form class="client-form" data-username="{{ client.user.username }}">
-                {% csrf_token %}
-                <button type="button" class="client-button">
-                    {{ client.surname }} {{ client.name }} {{ client.patronymic }} <br>{{ client.user }}
-                </button>
-                <button type="button" class="deleteBtn">Удалить пользователя</button>
-                <input type="hidden" class="username" value="{{ client.user.username }}">
-                <button type="button" class="downUpBtn">Удалить роль служащего</button>
-                <div class="operation-message" style="display: none;"></div>
-            </form>
-            <hr>
-        </div>
-    {% endfor %}
+{% for client in list_clients %}
+    <div class="client-item">
+        <form class="client-form" data-username="{{ client.user.username }}">
+            {% csrf_token %}
+            <button type="button" class="client-button">
+                {{ client.surname }} {{ client.name }} {{ client.patronymic }} <br>{{ client.user }}
+            </button>
+            <button type="button" class="deleteBtn">Удалить пользователя</button>
+            <input type="hidden" class="username" value="{{ client.user.username }}">
+            <button type="button" class="downUpBtn">Удалить роль служащего</button>
+            <div class="operation-message" style="display: none;"></div>
+        </form>
+        <hr>
+    </div>
+{% endfor %}
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-$(document).ready(function() {
-    $('.deleteBtn').click(function() {
-        var deleteButton = $(this); // Сохраняем ссылку на кнопку
-        var username = deleteButton.siblings('.username').val();
-        var messageDiv = deleteButton.siblings('.operation-message');
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.deleteBtn').click(function () {
+            var deleteButton = $(this); // Сохраняем ссылку на кнопку
+            var username = deleteButton.siblings('.username').val();
+            var messageDiv = deleteButton.siblings('.operation-message');
 
-        $.ajax({
-            type: 'POST',
-            url: '{% url "delete_user" %}',
-            data: {
-                'username': username,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function(response) {
-                console.log(response);
-                messageDiv.text('Пользователь удален').show();
-                deleteButton.hide(); // Используем сохраненную ссылку для скрытия кнопки
-            },
-            error: function(error) {
-                console.error('Произошла ошибка:', error);
-            }
+            $.ajax({
+                type: 'POST',
+                url: '{% url "delete_user" %}',
+                data: {
+                    'username': username,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    console.log(response);
+                    messageDiv.text('Пользователь удален').show();
+                    deleteButton.hide(); // Используем сохраненную ссылку для скрытия кнопки
+                },
+                error: function (error) {
+                    console.error('Произошла ошибка:', error);
+                }
+            });
+        });
+
+        $('.downUpBtn').click(function () {
+            var downUpButton = $(this); // Сохраняем ссылку на кнопку
+            var username = downUpButton.siblings('.username').val();
+            var messageDiv = downUpButton.siblings('.operation-message');
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url "downUp_user" %}',
+                data: {
+                    'username': username,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    console.log(response);
+                    messageDiv.text('Роль удалена').show();
+                    downUpButton.hide(); // Используем сохраненную ссылку для скрытия кнопки
+                },
+                error: function (error) {
+                    console.error('Произошла ошибка:', error);
+                }
+            });
         });
     });
-
-    $('.downUpBtn').click(function() {
-        var downUpButton = $(this); // Сохраняем ссылку на кнопку
-        var username = downUpButton.siblings('.username').val();
-        var messageDiv = downUpButton.siblings('.operation-message');
-
-        $.ajax({
-            type: 'POST',
-            url: '{% url "downUp_user" %}',
-            data: {
-                'username': username,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function(response) {
-                console.log(response);
-                messageDiv.text('Роль удалена').show();
-                downUpButton.hide(); // Используем сохраненную ссылку для скрытия кнопки
-            },
-            error: function(error) {
-                console.error('Произошла ошибка:', error);
-            }
-        });
-    });
-});
-    </script>
+</script>
 </body>
 </html>

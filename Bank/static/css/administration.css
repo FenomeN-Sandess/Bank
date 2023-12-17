@@ -1,0 +1,40 @@
+section {
+    display: flex;
+    justify-content: center;
+    height: auto;
+    width: 100%;
+}
+
+.container {
+    width: 80%;
+    padding: 1rem 0;
+}
+
+.top_block {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.sort_by {
+    display: none;
+}
+
+.sort_form {
+    margin-bottom: 2rem;
+}
+
+.form_title {
+    margin-bottom: 1rem;
+}
+
+.form_block {
+    margin-bottom: .5rem;
+}
+
+#sort_button {
+    display: none;
+}
+
+#reset_sort_button {
+    display: none;
+}
