@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import FormView
 
 from User.utils import *
@@ -36,6 +36,12 @@ class UserRegistrationView(FormView):
         messages.error(self.request, "Введены некорректные данные")
         return self.render_to_response({})
 
+    def dispatch(self, request, *args, **kwargs):
+        user = self.request.user
+        if not (user.is_authenticated and check_group(user, "Employee")):
+            return redirect(reverse("index"))
+        return super().dispatch(request, *args, **kwargs)
+
 
 class ProfileRegistrationView(FormView):
     template_name = "reg_form_profile.html"
@@ -45,6 +51,9 @@ class ProfileRegistrationView(FormView):
     def form_valid(self, form):
         current_user = User.objects.get(username=self.request.session.get("saved_username"))
         if not (check_profile_existence(current_user)):
+            if not(form.cleaned_data["name"].isalpha() and form.cleaned_data['surname'].isalpha() and form.cleaned_data["patronymic"].isalpha()):
+                messages.error(self.request, "ФИО введено неправильно")
+                return self.render_to_response({})
             if timezone.now().date() - form.cleaned_data["date_of_birth"] < timedelta(days=365 * 18):
                 messages.error(self.request, "Регистрация в банке положена лицам не моложе 18 лет")
                 return self.render_to_response({})
@@ -62,13 +71,14 @@ class ProfileRegistrationView(FormView):
     def dispatch(self, request, *args, **kwargs):
         user = self.request.user
         if not (user.is_authenticated and check_group(user, "Employee") and (check_session_existence(request))):
-            return redirect("/")
+            return redirect(reverse("index"))
         return super().dispatch(request, *args, **kwargs)
 
 
 def registerAnyWallet(request, any_form, wallet, save, html: str):
     user = request.user
-    is_anyGroup(request.user, "Employee")
+    if is_anyGroup(request.user, "Employee"):
+        return redirect(reverse("index"))
     contex = {"request": False, "request_message": str()}
     if check_session_existence(request):
         current_user = User.objects.get(username=request.session.get("saved_username"))
@@ -87,7 +97,7 @@ def registerAnyWallet(request, any_form, wallet, save, html: str):
                 if form_wallet.is_valid():
                     any_wallet = wallet.objects.create(owner=current_user.customuser)
                     save(any_wallet, form_wallet)
-                    return redirect("/management")
+                    return redirect(reverse("management"))
                 else:
                     contex.update({"request": True, "request_message": "Данные не валидны"})
     return render(request, html, contex)
@@ -144,15 +154,20 @@ class WalletsCloseView(FormView):
         return self.render_to_response({})
 
     def dispatch(self, request, *args, **kwargs):
-        is_anyGroup(request.user, "Employee")
+        user = self.request.user
+        if not (user.is_authenticated and check_group(user, "Employee")):
+            return redirect(reverse("index"))
         return super().dispatch(request, *args, **kwargs)
 
 
 def management(request):
-    is_anyGroup(request.user, "Employee")
+    user = request.user
+    if not (user.is_authenticated and check_group(user, "Employee")):
+        return redirect(reverse("index"))
     return render(request, "management.html")
 
 
 def choice(request):
-    is_anyGroup(request.user, "Employee")
+    if is_anyGroup(request.user, "Employee"):
+        return redirect(reverse("index"))
     return render(request, "choice_wallet.html")

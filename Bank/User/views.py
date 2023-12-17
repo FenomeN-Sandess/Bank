@@ -1,6 +1,8 @@
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import View
 
@@ -16,7 +18,7 @@ def transactions(request):
     if not (user.is_authenticated and check_group(user, "Client") and
             (check_wallets_existence(Wallet, user) or check_wallets_existence(CreditWallet, user) or
              check_wallets_existence(SavingsWallet, user))):
-        return redirect("/")
+        return redirect(reverse("index"))
 
     isThere_wallet = check_wallets_existence(Wallet, user)
     isThere_credit = check_wallets_existence(CreditWallet, user)
@@ -92,7 +94,8 @@ class PersonalAreaView(UserInfo, View):
     def get(self, request):
         user = self.request.user
         # Проверка на то, что пользователь принадлежит группе "Client"
-        is_anyGroup(request.user, "Client")
+        if is_anyGroup(request.user, "Client"):
+            return redirect(reverse("index"))
         profile = user.customuser
 
         context = {

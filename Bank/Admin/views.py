@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from User.procedure import *
 from User.models import *
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import ListView
 
 
@@ -27,6 +28,10 @@ class administrations_clients(ListView):
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
 
+    def dispatch(self, request, *args, **kwargs):
+        if is_anyGroup(request.user, "Admin"):
+            return redirect(reverse("index"))
+        return super().dispatch(request, *args, **kwargs)
 
 class administrations_employee(ListView):
     model = CustomUser
@@ -50,6 +55,10 @@ class administrations_employee(ListView):
             filter_objects = filter_objects.filter(patronymic__contains=patronymic_user)
         return filter_objects
 
+    def dispatch(self, request, *args, **kwargs):
+        if is_anyGroup(request.user, "Admin"):
+            return redirect(reverse("index"))
+        return super().dispatch(request, *args, **kwargs)
 
 def delete_user_view(request):
     if request.method == "POST":
@@ -75,5 +84,6 @@ def downUp_user_view(request):
 
 
 def choice_search(request):
-    is_anyGroup(request.user, "Admin")
+    if is_anyGroup(request.user, "Admin"):
+        return redirect(reverse("index"))
     return render(request, "choice_search.html")

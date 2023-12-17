@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.urls import reverse
+
 from .forms import *
 from .models import *
-from django.http import HttpResponse
-from django.contrib.auth import logout, authenticate, login
 import random
 
 
@@ -154,9 +154,9 @@ def check_debtExistence(credit) -> bool:
         return True
 
 
-def is_anyGroup(user, group: str):
+def is_anyGroup(user, group: str) -> bool:
     if not (user.is_authenticated and check_group(user, group)):
-        return redirect("/")
+        return True
 
 
 def random_nameCard(names):
@@ -165,3 +165,5 @@ def random_nameCard(names):
         return value
     else:
         return random_nameCard(names)
+
+
