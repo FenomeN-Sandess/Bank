@@ -1,16 +1,14 @@
 from decimal import Decimal
-
-from django.contrib import messages
 from django.contrib.auth import logout
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views.generic import View
-
 from .utils import *
+
 
 def log(request):
     logout(request)
     return render(request, "index.html")
+
 
 def transactions(request):
     user = request.user
@@ -156,6 +154,3 @@ class PersonalAreaView(UserInfo, View):
             })
 
         return {**wallets_existence, **wallets_data}
-
-
-

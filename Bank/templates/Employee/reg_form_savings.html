@@ -29,7 +29,7 @@
                         {% csrf_token %}
                         <div class="reg_block">
                             <label for="id_username">Введите логин пользователя</label>
-                            <input id="id_username" name="username" type="text">
+                            <input id="id_username" name="username" type="text" value="{{ login }}">
                         </div>
                         <div class="reg_block">
                             <div class="-"><label for="id_currency">Выберете валюту для сберегательного счёта: </label>

@@ -25,7 +25,7 @@ class ProfileForm(forms.Form):
     patronymic = forms.CharField(max_length=100, required=True)
     passport_series = forms.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
     passport_number = forms.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)])
-    itn = forms.CharField(min_length=12, max_length=12, required=False)
+    itn = forms.CharField(min_length=12, max_length=12, required=True)
     phone_number = forms.CharField(max_length=15, required=False)
     date_of_birth = forms.DateField(required=False)
 

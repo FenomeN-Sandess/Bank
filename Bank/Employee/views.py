@@ -51,7 +51,8 @@ class ProfileRegistrationView(FormView):
     def form_valid(self, form):
         current_user = User.objects.get(username=self.request.session.get("saved_username"))
         if not (check_profile_existence(current_user)):
-            if not(form.cleaned_data["name"].isalpha() and form.cleaned_data['surname'].isalpha() and form.cleaned_data["patronymic"].isalpha()):
+            if not (form.cleaned_data["name"].isalpha() and form.cleaned_data['surname'].isalpha() and
+                    form.cleaned_data["patronymic"].isalpha()):
                 messages.error(self.request, "ФИО введено неправильно")
                 return self.render_to_response({})
             if timezone.now().date() - form.cleaned_data["date_of_birth"] < timedelta(days=365 * 18):
