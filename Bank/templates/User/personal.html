@@ -12,6 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
           rel="stylesheet">
 
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
     <title>{% block title %}Личный кабинет{% endblock %}</title>
 
     <script>
@@ -20,9 +23,11 @@
             let button = document.getElementById('passport_button')
             if (data.style.display === 'block') {
                 button.innerText = 'Показать паспортные данные'
+                button.style.background = '#A594F9'
                 data.style.display = 'none'
             } else {
                 button.innerText = 'Скрыть паспортные данные'
+                button.style.background = '#F6A823'
                 data.style.display = 'block'
             }
         }
@@ -32,17 +37,30 @@
             let wallet = document.getElementById('wallet_info');
             let credit = document.getElementById('credit_wallet_info');
             let savings = document.getElementById('saving_wallet_info');
+            let wallet_button = document.getElementById('wallet_button');
+            let savings_button = document.getElementById('savings_button');
+            let credit_button = document.getElementById('credit_button');
+
             if (wallet_name === 'wallet') {
+                wallet_button.style.background = '#F6A823';
+                savings_button.style.background = '#A594F9';
+                credit_button.style.background = '#A594F9';
                 wallet.style.display = 'block';
                 credit.style.display = 'none'
                 savings.style.display = 'none'
             }
             if (wallet_name === 'credit') {
+                credit_button.style.background = '#F6A823';
+                wallet_button.style.background = '#A594F9';
+                savings_button.style.background = '#A594F9';
                 wallet.style.display = 'none';
                 credit.style.display = 'block'
                 savings.style.display = 'none'
             }
             if (wallet_name === 'saving') {
+                savings_button.style.background = '#F6A823';
+                wallet_button.style.background = '#A594F9';
+                credit_button.style.background = '#A594F9';
                 wallet.style.display = 'none';
                 credit.style.display = 'none'
                 savings.style.display = 'block'
@@ -51,32 +69,32 @@
     </script>
 </head>
 <body>
-    <header>
-        <div class="nav">
-            <div class="nav_logo">
-                Course.Bank
-            </div>
-            <nav class="nav_link_bar">
-                {% block sidebar %}
-                    <a class="nav_link" href="{% url "index" %}"> Главная страница </a>
-                    {% if authorization %} {# Проверка на авторизацию пользователя #}
-                        {% if admin %}
-                        <a href="{% url "choice_search" %}" class="nav_link">Администрирование</a>
-                        {% endif %}
-                        {% if employee %} {# Проверка на группу админ или служащий #}
-                            <a class="nav_link" href="{% url "management" %}"> Управление клиентскими данными и счетами </a>
-                        {% endif %}
-                        {% if client and profile %}
-                        <a href="{% url "personal" %}" class="nav_link">Личный кабинет</a>
-                     {% endif %}
-                        <a class="nav_link" href="{% url "logout" %}"> Выход </a>
-                    {% else %}
-                        <a class="nav_link" href="{% url "login_form" %}"> Вход </a>
-                    {% endif %}
-                {% endblock %}
-            </nav>
+<header>
+    <div class="nav">
+        <div class="nav_logo">
+            Course.Bank
         </div>
-    </header>
+        <nav class="nav_link_bar">
+            {% block sidebar %}
+                <a class="nav_link" href="{% url "index" %}"> Главная страница </a>
+                {% if authorization %} {# Проверка на авторизацию пользователя #}
+                    {% if admin %}
+                        <a href="{% url "choice_search" %}" class="nav_link">Администрирование</a>
+                    {% endif %}
+                    {% if employee %} {# Проверка на группу админ или служащий #}
+                        <a class="nav_link" href="{% url "management" %}"> Управление клиентскими данными и счетами </a>
+                    {% endif %}
+                    {% if client and profile %}
+                        <a href="{% url "personal" %}" class="nav_link">Личный кабинет</a>
+                    {% endif %}
+                    <a class="nav_link" href="{% url "logout" %}"> Выход </a>
+                {% else %}
+                    <a class="nav_link" href="{% url "login_form" %}"> Вход </a>
+                {% endif %}
+            {% endblock %}
+        </nav>
+    </div>
+</header>
 
 <section>
     <div class="content_row">
@@ -91,7 +109,7 @@
                     <div class="avatar">
                         <img class="avatar_img" src="../../static/img/avatar_img.png" alt="">
                     </div>
-{#                    <img class="avatar_bg" src="../../static/img/avatar_bg.png" alt="">#}
+                    {#                    <img class="avatar_bg" src="../../static/img/avatar_bg.png" alt="">#}
                 </div>
                 <div class="personal_text">ФИО пользователя: {{ surname }} {{ name }} {{ patronymic }}</div>
                 <div class="personal_text">Номер телефона: {{ phone_number }}</div>
@@ -105,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <div class="content_container" style="width: 60%;">
+        <div class="content_container" style="width: 60%">
             <div class="content_block">
                 <div class="block_title">
                     <div class="block_title_text">
@@ -114,18 +132,29 @@
                 </div>
 
                 <div class="buttons_container">
-                    <button style="width: 30%;" onclick="openclose_wallet_data('wallet')">Сберегательный счёт</button>
-                    <button style="width: 30%;" onclick="openclose_wallet_data('saving')">Накопительный счёт</button>
-                    <button style="width: 30%;" onclick="openclose_wallet_data('credit')">Кредитный счёт</button>
+                    <button id="wallet_button" style="width: 30%;" onclick="openclose_wallet_data('wallet')">
+                        Сберегательный счёт
+                    </button>
+                    <button id="savings_button" style="width: 30%;" onclick="openclose_wallet_data('saving')">
+                        Накопительный счёт
+                    </button>
+                    <button id="credit_button" style="width: 30%;" onclick="openclose_wallet_data('credit')">Кредитный
+                        счёт
+                    </button>
                 </div>
 
                 <div class="wallet_container" id="wallet_info">
                     {% if isThere_wallet %}
+                        <div class="personal_text"><b>Сберегательный счёт</b></div>
                         <div class="personal_text">Номер счёта: {{ number_wallet }}</div>
                         <div class="personal_text">Остаток на сберегательном
                             счету: {{ amount_wallet }} {{ currency_wallet }}</div>
                         <div class="transactions">
-                            <a href="{% url "transactions" %}" class="money_transfer">Перевод денежных средств</a> <br>
+                            <a href="{% url "transactions" %}" class="a_underline">
+                                Перевод денежных средств &nbsp
+                                <span class="material-symbols-outlined">send_money</span>
+                            </a>
+                            <br>
                         </div>
                     {% else %}
                         <div class="notThere_wallet_message">У вас ещё нет сберегательного счёта. Для создания
@@ -136,12 +165,16 @@
 
                 <div class="wallet_container" id="credit_wallet_info">
                     {% if isThere_credit %}
-                        <div class="personal_text">Номер кредитного счёта: {{ number_credit }}</div>
+                        <div class="personal_text"><b>Кредитный счёт</b></div>
+                        <div class="personal_text">Номер счёта: {{ number_credit }}</div>
                         <div class="personal_text">Остаток на кредитном счету: {{ amount_credit }} {{ currency_credit }}
                             из {{ limit }} {{ currency_credit }}</div>
                         <div class="personal_text">Процент по кредиту: {{ percent }}</div>
                         <div class="transactions">
-                            <a href="{% url "transactions" %}" class="a_underline">Перевод денежных средств</a>
+                            <a href="{% url "transactions" %}" class="a_underline">
+                                Перевод денежных средств &nbsp
+                                <span class="material-symbols-outlined">send_money</span>
+                            </a>
                         </div>
                     {% else %}
                         <div class="notThere_credit_message">У вас нет кредитного счёта. Для создания обратитесь к
@@ -152,12 +185,16 @@
 
                 <div class="wallet_container" id="saving_wallet_info">
                     {% if isThere_savings %}
-                        <div class="personal_text">Номер накопительного счёта: {{ number_savings }}</div>
+                        <div class="personal_text"><b>Накопительный счёт</b></div>
+                        <div class="personal_text">Номер счёта: {{ number_savings }}</div>
                         <div class="personal_text">Остаток на накопительном
                             счету: {{ amount_savings }} {{ currency_savings }}</div>
                         <div class="personal_text">Ставка: {{ rate }}</div>
                         <div class="transactions">
-                            <a href="{% url "transactions" %}" class="a_underline">Перевод денежных средств</a>
+                            <a href="{% url "transactions" %}" class="a_underline">
+                                Перевод денежных средств &nbsp
+                                <span class="material-symbols-outlined">send_money</span>
+                            </a>
                         </div>
                     {% else %}
                         <div class="notThere_savings_message">У вас ещё нет накопительного счёта. Для создания

@@ -1,11 +1,17 @@
 .wallet_container {
     display: none;
+    background: #f8f8f8;
+    box-shadow: 0 0 1rem .1rem rgba(0, 0, 0, 0.1);
+    padding: 2rem 3rem;
+    border-radius: 1.5rem;
 }
 
 .buttons_container {
     display: flex;
+    height: auto;
     flex-direction: row;
     justify-content: space-around;
+    margin-bottom: 1.5rem;
 }
 
 .personal_text {
@@ -53,4 +59,12 @@
     width: 90%;
     border-radius: 50%;
     background: black;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
 }

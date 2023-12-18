@@ -211,7 +211,8 @@ select {
 }
 
 .a_underline {
-    display: block;
+    display: flex;
+    justify-content: center;
     width: max-content;
     position: relative;
     padding: 0.01em 0;
