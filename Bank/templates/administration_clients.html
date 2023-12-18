@@ -13,6 +13,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Roboto+Condensed:wght@100;300&display=swap"
           rel="stylesheet">
 
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
     <title>{% block title %}Администрирование клиентов{% endblock %}</title>
 
     <script>
@@ -181,7 +184,7 @@
 
                                 <div class="client-buttons">
                                     <button onclick="open_action('Пользователь успешно удален')" type="button"
-                                            class="deleteBtn">Удалить пользователя
+                                            class="deleteBtn"><span class="material-symbols-outlined">delete</span>
                                     </button>
                                     <input type="hidden" class="username" value="{{ client.user.username }}">
                                     <button onclick="open_action('Роль служащего успешно выдана')" type="button"
