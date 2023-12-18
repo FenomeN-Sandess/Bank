@@ -31,7 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "Applications",
+    "HomePage",
+    "Admin",
+    "Employee",
+    "User",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,7 +59,7 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [TEMPLATES_DIR / "HomePage", TEMPLATES_DIR / "User", TEMPLATES_DIR / "Admin", TEMPLATES_DIR / "Employee"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
