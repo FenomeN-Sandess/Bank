@@ -20,8 +20,8 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class ProfileForm(forms.Form):
-    name = forms.CharField(max_length=100, required=False)
-    surname = forms.CharField(max_length=100, required=False)
+    name = forms.CharField(max_length=100, required=True)
+    surname = forms.CharField(max_length=100, required=True)
     patronymic = forms.CharField(max_length=100, required=True)
     passport_series = forms.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
     passport_number = forms.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)])
@@ -50,5 +50,5 @@ class CreditForm(BaseForm):
 
 
 class closingForm(forms.Form):
-    number = forms.CharField(required=False, min_length=20, max_length=20)
+    number = forms.CharField(required=True, min_length=20, max_length=20)
     checkbox = forms.BooleanField(required=True)
