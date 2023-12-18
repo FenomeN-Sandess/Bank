@@ -16,3 +16,41 @@
     display: none;
 }
 
+.avatar_block {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 13vh;
+    border-radius: 1.5rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(45deg, #A594F9, #F6A823);
+}
+
+.avatar {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    top: -15%;
+    border-radius: 50%;
+    height: 7rem;
+    width: 7rem;
+    background: #FFFFFF;
+}
+
+.avatar_bg {
+    object-fit: fill;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.avatar_img {
+    height: 90%;
+    width: 90%;
+    border-radius: 50%;
+    background: black;
+}
